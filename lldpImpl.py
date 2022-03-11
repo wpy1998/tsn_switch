@@ -27,6 +27,14 @@ def post_info(url, jstr):
     resp = requests.post(url, jstr, headers=headers, auth=auth)
     print('response: ', resp.content)
 
+def get_neightbor(network_card_name):
+    fp = os.popen('lldpcli show neighbor ports ' + network_card_name + ' summary -f json')
+    result = fp.read()
+    try:
+        object = json.loads(result).get('lldp').get('interface')
+    except:
+        object = json.loads(result).get('lldp').get('interface').get(0)
+    print(object)
 
 if __name__ == "__main__":
     url = 'http://localhost:8181/restconf/operational/network-topology:network-topology'
