@@ -40,8 +40,9 @@ def get_neightbor(network_card_name):
     return object.get(neighbor_key)
 
 if __name__ == "__main__":
-    url = 'http://localhost:8181/restconf/operational/network-topology:network-topology'
+    # url = 'http://localhost:8181/restconf/operational/network-topology:network-topology'
     # get_info(url)
+    cuc_ip = input('please input cuc_ip： ')
 
     fp = os.popen("lldpcli show interface -f json",)
     result = fp.read()
