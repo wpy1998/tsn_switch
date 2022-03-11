@@ -34,7 +34,10 @@ def get_neightbor(network_card_name):
         object = json.loads(result).get('lldp').get('interface')
     except:
         object = json.loads(result).get('lldp').get('interface').get(0)
-    print(object)
+    neighbor_key = ''
+    for var in object:
+        neighbor_key = var
+    return object.get(neighbor_key)
 
 if __name__ == "__main__":
     url = 'http://localhost:8181/restconf/operational/network-topology:network-topology'
@@ -51,7 +54,7 @@ if __name__ == "__main__":
         via = array.get('var')
         if via != 'lldp':
             print("there is no possible network card")
-        print(via)
+        neighbor = get_neightbor(network_card_name)
     except:
         for network_card in array:
             network_card_name = ''
@@ -60,4 +63,4 @@ if __name__ == "__main__":
             via = network_card.get('var')
             if via != 'lldp':
                 continue
-            print(via)
+            neighbor = get_neightbor(network_card_name)
