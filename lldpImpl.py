@@ -1,31 +1,33 @@
-#!/usr/bin/python
-import requests
 import os
 import json
-from requests.auth import HTTPBasicAuth
 
-headers = {'Content-Type': 'application/json',
-           "Accept": "application/json"}
-auth = HTTPBasicAuth('admin', 'admin')
-
-def get_info(url):
-    print('request: ' + url)
-    resp = requests.get(url, headers=headers, auth=auth)
-    print('response: ', resp.content)
-
-def put_info(url, jstr):
-    print('request: ' + url)
-    resp = requests.put(url, jstr, headers=headers, auth=auth)
-    print('response: ', resp.content)
-
-def delete_info(url):
-    print('request: ' + url)
-    resp = requests.delete(url, headers=headers, auth=auth)
-    print('response: ', resp.content)
-
-def post_info(url, jstr):
-    resp = requests.post(url, jstr, headers=headers, auth=auth)
-    print('response: ', resp.content)
+# get_interface->get_neighbor
+def get_interface():
+    fp = os.popen("lldpcli show interface -f json",)
+    result = fp.read()
+    object = json.loads(result)
+    array = object.get('lldp').get('interface')
+    try:
+        network_card_name = ''
+        for var in array:
+            network_card_name = var
+        network_card = array.get(network_card_name)
+        via = array.get('via')
+        if via != 'LLDP':
+            print("there is no possible network card")
+        neighbor = get_neightbor(network_card_name)
+        print(network_card)
+    except:
+        for object in array:
+            network_card_name = ''
+            for var in object:
+                network_card_name = var
+            network_card = object.get(network_card_name)
+            via = network_card.get('via')
+            if via != 'LLDP':
+                continue
+            neighbor = get_neightbor(network_card_name)
+            print(network_card)
 
 def get_neightbor(network_card_name):
     fp = os.popen('lldpcli show neighbor ports ' + network_card_name + ' summary -f json')
@@ -38,30 +40,3 @@ def get_neightbor(network_card_name):
     for var in object:
         neighbor_key = var
     return object.get(neighbor_key)
-
-if __name__ == "__main__":
-    # url = 'http://localhost:8181/restconf/operational/network-topology:network-topology'
-    # get_info(url)
-    cuc_ip = input('please input cuc_ip： ')
-
-    fp = os.popen("lldpcli show interface -f json",)
-    result = fp.read()
-    object = json.loads(result)
-    array = object.get('lldp').get('interface')
-    try:
-        network_card_name = ''
-        for var in array:
-            network_card_name = var
-        via = array.get('var')
-        if via != 'lldp':
-            print("there is no possible network card")
-        neighbor = get_neightbor(network_card_name)
-    except:
-        for network_card in array:
-            network_card_name = ''
-            for var in network_card:
-                network_card_name = var
-            via = network_card.get('var')
-            if via != 'lldp':
-                continue
-            neighbor = get_neightbor(network_card_name)
