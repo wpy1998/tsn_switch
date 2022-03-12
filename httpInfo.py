@@ -21,5 +21,6 @@ def delete_info(url):
     print('response: ', resp.content)
 
 def post_info(url, jstr):
+    print('request: ' + url)
     resp = requests.post(url, jstr, headers=headers, auth=auth)
     print('response: ', resp.content)
