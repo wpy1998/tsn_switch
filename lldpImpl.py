@@ -47,8 +47,6 @@ def get_neightbor(network_card_name):
     return object.get(neighbor_key)
 
 def build_link(network_card_name, neighbor):
-    host_name = computer.host_name
-
     n1 = neighbor.get("chassis")
     for var in n1:
         neighbor_name = var
