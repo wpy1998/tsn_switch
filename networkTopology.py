@@ -2,7 +2,7 @@ import json
 
 class Topology:
     topology_id = ''
-    def Topology(self, topology_id):
+    def __init__(self, topology_id):
         self.topology_id = topology_id
 
     def get_json(self):
@@ -11,7 +11,7 @@ class Topology:
 class Node:
     node_id = ''
     termination_points = []
-    def Node(self):
+    def __init__(self):
         self.refresh()
 
     def refresh(self):
@@ -26,14 +26,26 @@ class Link:
     source_tp = ''
     dest_node = ''
     dest_tp = ''
-    def Link(self, source_node, source_tp, dest_node, dest_tp):
+    def __init__(self, source_node, source_tp, dest_node, dest_tp):
         self.source_node = source_node
         self.source_tp = source_tp
         self.dest_node = dest_node
         self.dest_tp = dest_tp
         self.link_id = source_node + "(" + source_tp + ")--" + dest_node + "(" + dest_tp + ")"
-        self.link_id.replace('/', '*', self.link_id.length())
+        try:
+            self.link_id.replace('/', '*', self.link_id.length())
+        except:
+            return
 
     def get_json(self):
-        link = json.dumps({})
-        print(link)
+        link = {}
+        link['link-id'] = self.link_id
+        source = {}
+        source['source-tp'] = self.source_tp
+        source['source-node'] = self.source_node
+        link['source'] = source
+        destination = {}
+        destination['dest-node'] = self.dest_node
+        destination['dest-tp'] = self.dest_tp
+        link['destination'] = destination
+        return link
