@@ -1,17 +1,21 @@
 import httpInfo
 import networkTopology
 import lldp
+import json
 
 class CUCConnect:
     def __init__(self, cuc_ip):
         self.urls = {
             'tsn-topology': "http://" + str(cuc_ip) +
-                    ":8181/restconf/config/network-topology:network-topology/",
-            'school': "ucas"
+                    ":8181/restconf/config/network-topology:network-topology/"
         }
 
     def registerSwitch(self, lldpImpl):
-        url = self.urls.get("tsn-topology")
+        url = self.urls.get("tsn-topology") + 'topology/tsn-network'
+        print(url)
         topology = networkTopology.Topology('tsn-network', lldpImpl)
-        print(topology.get_json())
-        httpInfo.put_info(url, topology.get_json())
+        array = []
+        array.append(topology.get_json())
+        topologies = {}
+        topologies['topology'] = array
+        httpInfo.put_info(url, json.dumps(topologies))
