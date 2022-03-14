@@ -1,15 +1,22 @@
-import json
-
 class Topology:
-    topology_id = ''
-    def __init__(self, topology_id):
+    def __init__(self, topology_id, lldpImpl):
         self.topology_id = topology_id
+        self.current = lldpImpl.current
+        self.linklist = lldpImpl.linklist
 
     def get_json(self):
-        return
+        topology = {}
+        topology['topology-id'] = self.topology_id
+        nodes = []
+        nodes.append(self.current.get_json())
+        topology['node'] = nodes
+        links = []
+        for link in self.linklist:
+            links.append(link.get_json())
+        topology['link'] = links
+        return topology
 
 class Node:
-    node_id = ''
     termination_points = []
     def __init__(self):
         self.refresh()
@@ -18,14 +25,20 @@ class Node:
         self.termination_points.clear()
 
     def get_json(self):
-        return
+        node = {}
+        node['node-id'] = self.node_id
+        tps = []
+        for tp_str in self.termination_points:
+            tp = {}
+            tp['tp-id'] = tp_str
+            tps.append(tp)
+        node['termination_point'] = tps
+        return node
+
+    def set_termination_points(self, tp):
+        self.termination_points.append(tp)
 
 class Link:
-    link_id = ''
-    source_node = ''
-    source_tp = ''
-    dest_node = ''
-    dest_tp = ''
     def __init__(self, source_node, source_tp, dest_node, dest_tp):
         self.source_node = source_node
         self.source_tp = source_tp
