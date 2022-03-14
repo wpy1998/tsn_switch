@@ -32,7 +32,7 @@ class Node:
             tp = {}
             tp['tp-id'] = tp_str
             tps.append(tp)
-        node['termination_point'] = tps
+        node['termination-point'] = tps
         return node
 
     def set_termination_points(self, tp):
@@ -44,7 +44,8 @@ class Link:
         self.source_tp = source_tp
         self.dest_node = dest_node
         self.dest_tp = dest_tp
-        self.link_id = source_node + "(" + source_tp + ")--" + dest_node + "(" + dest_tp + ")"
+        self.link_id = str(source_node) + "(" + str(source_tp) + ")--" + str(dest_node) + "(" + \
+                       str(dest_tp) + ")"
         try:
             self.link_id.replace('/', '*', self.link_id.length())
         except:
