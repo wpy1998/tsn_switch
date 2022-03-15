@@ -12,9 +12,7 @@ class CUCConnect:
 
     def registerSwitch(self, lldpImpl):
         url = self.urls.get("tsn-topology") + 'topology/tsn-network'
-        print(url)
         topology = networkTopology.Topology('tsn-network', lldpImpl)
-        print(topology.get_json())
         array = []
         array.append(topology.get_json())
         topologies = {}

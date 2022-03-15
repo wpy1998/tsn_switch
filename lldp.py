@@ -31,7 +31,7 @@ class LLDPImpl:
                 if via != 'LLDP':
                     continue
                 neighbor = self.get_neighbor(network_card_name)
-                self.build_link(network_card_name, neighbor)
+                self.build_target_link(network_card_name, neighbor)
                 self.build_node(network_card_name)
         else:
             network_card_name = ''
@@ -42,7 +42,7 @@ class LLDPImpl:
             if via != 'LLDP':
                 print("there is no LLDP network card")
             neighbor = self.get_neighbor(network_card_name)
-            self.build_link(network_card_name, neighbor)
+            self.build_target_link(network_card_name, neighbor)
             self.build_node(network_card_name)
 
     def get_neighbor(self, network_card_name):
@@ -56,13 +56,23 @@ class LLDPImpl:
             neighbor_key = var
         return object.get(neighbor_key)
 
-    def build_link(self, network_card_name, neighbor):
-        n1 = neighbor.get("chassis")
-        for var in n1:
+    def build_target_link(self, network_card_name, neighbor):
+        chassis = neighbor.get("chassis")
+        for var in chassis:
             neighbor_name = var
         neighbor_card_name = neighbor.get("port").get("descr")
+        if(neighbor_name == None or neighbor_card_name == None):
+            self.build_empty_link(network_card_name, neighbor)
+            return
         link = networkTopology.Link(computer.host_name, network_card_name,
                                     neighbor_name, neighbor_card_name)
+        self.linklist.append(link)
+
+    def build_empty_link(self, network_card_name, neighbor):
+        print(json.dumps(neighbor))
+        mac = neighbor.get("chassis").get("id").get("value")
+        link = networkTopology.Link(computer.host_name, network_card_name,
+                                    mac, mac)
         self.linklist.append(link)
 
     def build_node(self, network_card_name):
