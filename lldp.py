@@ -31,7 +31,8 @@ class LLDPImpl:
                 if via != 'LLDP':
                     continue
                 neighbor = self.get_neighbor(network_card_name)
-                self.build_target_link(network_card_name, neighbor)
+                if neighbor != None:
+                    self.build_target_link(network_card_name, neighbor)
                 self.build_node(network_card_name)
         else:
             network_card_name = ''
@@ -42,16 +43,33 @@ class LLDPImpl:
             if via != 'LLDP':
                 print("there is no LLDP network card")
             neighbor = self.get_neighbor(network_card_name)
-            self.build_target_link(network_card_name, neighbor)
+            if neighbor != None:
+                self.build_target_link(network_card_name, neighbor)
             self.build_node(network_card_name)
 
     def get_neighbor(self, network_card_name):
         fp = os.popen('lldpcli show neighbor ports ' + network_card_name + ' summary -f json')
         result = fp.read()
-        object = json.loads(result).get('lldp').get('interface')
-        if len(object) > 1:
-            object = object[0]
-        neighbor_key = ''
+        interfaces = json.loads(result).get('lldp').get('interface')
+        print(len(interfaces))
+        if(len(interfaces) > 1):
+            for i in range(len(interfaces)):
+                object = interfaces[i]
+                ttl = int(object.get(network_card_name).get("port").get("ttl"))
+                print(ttl)
+                if ttl < 256:
+                    break
+                else:
+                    object = None
+        else:
+            object = interfaces
+            ttl = int(object.get(network_card_name).get("port").get("ttl"))
+            print(ttl)
+            if ttl > 255:
+                object = None
+        if object == None:
+            print("NetworkCard: ", network_card_name, " has no neighbor through LLDP")
+            return None
         for var in object:
             neighbor_key = var
         return object.get(neighbor_key)
