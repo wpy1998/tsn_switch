@@ -51,12 +51,12 @@ class LLDPImpl:
         fp = os.popen('lldpcli show neighbor ports ' + network_card_name + ' summary -f json')
         result = fp.read()
         interfaces = json.loads(result).get('lldp').get('interface')
-        print(len(interfaces))
+        # print(len(interfaces))
         if(len(interfaces) > 1):
             for i in range(len(interfaces)):
                 object = interfaces[i]
                 ttl = int(object.get(network_card_name).get("port").get("ttl"))
-                print(ttl)
+                # print(ttl)
                 if ttl < 256:
                     break
                 else:
@@ -64,7 +64,7 @@ class LLDPImpl:
         else:
             object = interfaces
             ttl = int(object.get(network_card_name).get("port").get("ttl"))
-            print(ttl)
+            # print(ttl)
             if ttl > 255:
                 object = None
         if object == None:
@@ -87,7 +87,7 @@ class LLDPImpl:
         self.linklist.append(link)
 
     def build_empty_link(self, network_card_name, neighbor):
-        print(json.dumps(neighbor))
+        # print(json.dumps(neighbor))
         mac = neighbor.get("chassis").get("id").get("value")
         link = networkTopology.Link(computer.host_name, network_card_name,
                                     mac, mac)
