@@ -27,6 +27,7 @@ class Node:
     def get_json(self):
         node = {}
         node['node-id'] = self.node_id
+        node['node-type'] = 'switch'
         tps = []
         for tp_str in self.termination_points:
             tp = {}

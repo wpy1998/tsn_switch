@@ -3,7 +3,7 @@ import networkTopology
 import lldp
 import json
 
-class CUCConnect:
+class NetworkTopologyLauncher:
     def __init__(self, cuc_ip):
         self.urls = {
             'tsn-topology': "http://" + str(cuc_ip) +
