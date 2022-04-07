@@ -1,5 +1,4 @@
 import time
-
 import lldp
 import networktopologylauncher
 
@@ -9,7 +8,6 @@ if __name__ == "__main__":
     print('you can change the cuc_ip in file: switchApp.py')
     lldpImpl = lldp.LLDPImpl()
     launcher = networktopologylauncher.NetworkTopologyLauncher(cuc_ip)
-    # cuc_connect.registerSwitch(lldpImpl)
     while 1 == 1:
         # print("next")
         launcher.registerSwitch(lldpImpl)

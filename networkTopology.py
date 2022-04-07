@@ -1,3 +1,6 @@
+import computer
+
+
 class Topology:
     def __init__(self, topology_id, lldpImpl):
         self.topology_id = topology_id

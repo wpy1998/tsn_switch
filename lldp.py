@@ -94,5 +94,5 @@ class LLDPImpl:
         self.linklist.append(link)
 
     def build_node(self, network_card_name):
-        self.current.node_id = computer.host_name
+        self.current.node_id = computer.host_name + computer.mac
         self.current.set_termination_points(network_card_name)
