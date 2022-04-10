@@ -57,7 +57,7 @@ class LLDPImpl:
                 object = interfaces[i]
                 ttl = int(object.get(network_card_name).get("port").get("ttl"))
                 # print(ttl)
-                if ttl < 256:
+                if ttl < 10000:
                     break
                 else:
                     object = None
@@ -65,7 +65,7 @@ class LLDPImpl:
             object = interfaces
             ttl = int(object.get(network_card_name).get("port").get("ttl"))
             # print(ttl)
-            if ttl > 255:
+            if ttl > 10000:
                 object = None
         if object == None:
             print("NetworkCard: ", network_card_name, " has no neighbor through LLDP")
