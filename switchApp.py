@@ -1,15 +1,12 @@
 # -- coding:UTF-8 --
-import time
-import lldp
-import networktopologylauncher
+import hardware.computer as hc
+from network_topology import lldp
+import network_topology_launcher
 
 if __name__ == "__main__":
-    cuc_ip = '10.2.25.4'
-    print('current cuc_ip: ', cuc_ip)
-    print('you can change the cuc_ip in file: switchApp.py')
-    lldpImpl = lldp.LLDPImpl()
-    launcher = networktopologylauncher.NetworkTopologyLauncher(cuc_ip)
-    while 1 == 1:
-        # print("next")
-        launcher.registerSwitch(lldpImpl)
-        time.sleep(15 * 60)
+    cuc_ip = 'localhost'
+    print('current cuc_ip: ', hc.cuc_ip)
+    print('you can change the cuc_ip in hardware.computer')
+    lldpImpl = lldp.LLDP()
+    launcher = network_topology_launcher.NetworkTopologyLauncher()
+    launcher.startTimerThread()

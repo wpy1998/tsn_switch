@@ -1,11 +1,12 @@
 import os
 import json
-import computer
-import networkTopology
+from hardware import computer
+import network_topology.node as nn
+import network_topology.link as nl
 
-class LLDPImpl:
+class LLDP:
     linklist = []
-    current = networkTopology.Node()
+    current = nn.Node()
 
     def __init__(self):
         self.refresh()
@@ -82,14 +83,14 @@ class LLDPImpl:
         if(neighbor_name == None or neighbor_card_name == None):
             self.build_empty_link(network_card_name, neighbor)
             return
-        link = networkTopology.Link(computer.host_name, network_card_name,
+        link = nl.Link(computer.host_name, network_card_name,
                                     neighbor_name, neighbor_card_name)
         self.linklist.append(link)
 
     def build_empty_link(self, network_card_name, neighbor):
         # print(json.dumps(neighbor))
         mac = neighbor.get("chassis").get("id").get("value")
-        link = networkTopology.Link(computer.host_name, network_card_name,
+        link = nl.Link(computer.host_name, network_card_name,
                                     mac, mac)
         self.linklist.append(link)
 
