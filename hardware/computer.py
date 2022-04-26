@@ -10,9 +10,9 @@ urls = {
     'tsn-topology': "http://" + cuc_ip +
                     ":8181/restconf/config/network-topology:network-topology/",
     'tsn-listener': "http://" + cuc_ip +
-                ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/",
+                    ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/",
     'tsn-talker': "http://" + cuc_ip +
-                ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/"
+                  ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/"
 }
 macs = []
 ipv4s = []
