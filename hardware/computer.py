@@ -53,3 +53,4 @@ macs = []
 ipv4s = []
 ipv6s = []
 refresh()
+host_merge = host_name + macs[0]

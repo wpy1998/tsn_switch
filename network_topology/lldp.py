@@ -83,17 +83,17 @@ class LLDP:
         if(neighbor_name == None or neighbor_card_name == None):
             self.build_empty_link(network_card_name, neighbor)
             return
-        link = nl.Link(computer.host_name, network_card_name,
+        link = nl.Link(computer.host_merge, network_card_name,
                                     neighbor_name, neighbor_card_name)
         self.linklist.append(link)
 
     def build_empty_link(self, network_card_name, neighbor):
         # print(json.dumps(neighbor))
         mac = neighbor.get("chassis").get("id").get("value")
-        link = nl.Link(computer.host_name, network_card_name,
+        link = nl.Link(computer.host_merge, network_card_name,
                                     mac, mac)
         self.linklist.append(link)
 
     def build_node(self, network_card_name):
-        self.current.node_id = computer.host_name + computer.macs[0]
+        self.current.node_id = computer.host_merge
         self.current.set_termination_points(network_card_name)
