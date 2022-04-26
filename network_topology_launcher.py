@@ -2,7 +2,6 @@ import hardware.computer as hc
 import network_topology.lldp
 from network_topology import timer_thread
 
-
 class NetworkTopologyLauncher:
     timerThread = None
     def __init__(self):
@@ -18,6 +17,6 @@ class NetworkTopologyLauncher:
         self.timerThread.start()
 
     def stopTimeThread(self):
-        print('stop timer thread')
+        print('--Thread: TimerThread interrupted--')
         if self.timerThread is not None and self.timerThread.isAlive():
             self.timerThread.stop()
