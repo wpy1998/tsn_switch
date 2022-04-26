@@ -21,8 +21,10 @@ def refresh():
             break
         mac = target.get('id').get('value').replace(':', '-')
         macs.append(mac)
-        ipv4s.append(target.get('mgmt-ip')[0])
-        ipv6s.append(target.get('mgmt-ip')[1])
+        mgmt_ip = target.get('mgmt-ip')
+        print(mgmt_ip)
+        ipv4s.append(mgmt_ip[0])
+        ipv6s.append(mgmt_ip[1])
 
 
 topology_id = 'tsn-network'
