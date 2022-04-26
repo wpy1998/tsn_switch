@@ -1,26 +1,6 @@
 import socket
-import uuid
 import json
 import os
-
-topology_id = 'tsn-network'
-host_name = socket.gethostname()
-cuc_ip = "localhost"
-urls = {
-    'tsn-topology': "http://" + cuc_ip +
-                    ":8181/restconf/config/network-topology:network-topology/",
-    'tsn-listener': "http://" + cuc_ip +
-                    ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/",
-    'tsn-talker': "http://" + cuc_ip +
-                  ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/"
-}
-macs = []
-ipv4s = []
-ipv6s = []
-
-def get_mac():
-    mac = uuid.UUID(int=uuid.getnode()).hex[-12:]
-    return ":".join([mac[e:e+2] for e in range(0, 11, 2)])
 
 def refresh():
     macs.clear()
@@ -44,4 +24,19 @@ def refresh():
         ipv4s.append(target.get('mgmt-ip')[0])
         ipv6s.append(target.get('mgmt-ip')[1])
 
+
+topology_id = 'tsn-network'
+host_name = socket.gethostname()
+cuc_ip = "localhost"
+urls = {
+    'tsn-topology': "http://" + cuc_ip +
+                    ":8181/restconf/config/network-topology:network-topology/",
+    'tsn-listener': "http://" + cuc_ip +
+                    ":8181/restconf/config/tsn-listener-type:stream-listener-config/devices/",
+    'tsn-talker': "http://" + cuc_ip +
+                  ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/"
+}
+macs = []
+ipv4s = []
+ipv6s = []
 refresh()
