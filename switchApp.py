@@ -10,3 +10,8 @@ if __name__ == "__main__":
     lldpImpl = lldp.LLDP()
     launcher = network_topology_launcher.NetworkTopologyLauncher()
     launcher.startTimerThread()
+    while True:
+        next = input()
+        if next == 'exit' or next == 'quit' or next == 'stop':
+            launcher.stopTimeThread()
+            break

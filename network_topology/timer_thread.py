@@ -39,3 +39,4 @@ class TimerThread(threading.Thread):
             target['link'] = array
             print('--register link to controller--')
             httpInfo.put_info(url + '/link/' + link['link-id'], json.dumps(target))
+
