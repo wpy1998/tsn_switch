@@ -10,23 +10,33 @@ def refresh():
     result = fp.read()
     origin = json.loads(result).get("lldp")
     inters = origin.get('interface')
-    for network_card_name in inters:
-        # print(network_card_name)
-        inter = inters.get(network_card_name)
-        via = inter.get('via')
-        if via != 'LLDP':
-            continue
-        chassis = inter.get('chassis')
-        for name in chassis:
-            target = chassis.get(name)
-            break
-        mac = target.get('id').get('value').replace(':', '-')
-        macs.append(mac)
-        mgmt_ip = target.get('mgmt-ip')
-        # print(mgmt_ip)
-        ipv4s.append(mgmt_ip[0])
-        ipv6s.append(mgmt_ip[1])
+    if len(inters) > 1:
+        for obj in inters:
+            network_card_name = ''
+            for obj1 in obj:
+                network_card_name = obj1
+            add_computer_message(obj.get(network_card_name))
+    else:
+        network_card_name = ''
+        for obj in inters:
+            network_card_name = obj
+        add_computer_message(inters.get(network_card_name))
 
+
+def add_computer_message(inter):
+    via = inter.get('via')
+    if via != 'LLDP':
+        return
+    chassis = inter.get('chassis')
+    for name in chassis:
+        target = chassis.get(name)
+        break
+    mac = target.get('id').get('value').replace(':', '-')
+    macs.append(mac)
+    mgmt_ip = target.get('mgmt-ip')
+    # print(mgmt_ip)
+    ipv4s.append(mgmt_ip[0])
+    ipv6s.append(mgmt_ip[1])
 
 topology_id = 'tsn-network'
 host_name = socket.gethostname()
