@@ -6,7 +6,7 @@ class Node:
         self.refresh()
 
     def refresh(self):
-        self.node_id = hc.host_name + hc.mac
+        self.node_id = hc.host_name + hc.macs[0]
         self.termination_points.clear()
 
     def get_json(self):

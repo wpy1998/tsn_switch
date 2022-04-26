@@ -1,11 +1,10 @@
 import socket
 import uuid
+import json
+import os
 
-def get_mac():
-    mac = uuid.UUID(int=uuid.getnode()).hex[-12:]
-    return ":".join([mac[e:e+2] for e in range(0, 11, 2)])
-
-
+topology_id = 'tsn-network'
+host_name = socket.gethostname()
 cuc_ip = "localhost"
 urls = {
     'tsn-topology': "http://" + cuc_ip +
@@ -15,7 +14,34 @@ urls = {
     'tsn-talker': "http://" + cuc_ip +
                 ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/"
 }
-topology_id = 'tsn-network'
-host_ip = socket.gethostbyname(socket.gethostname())
-host_name = socket.gethostname()
-mac = get_mac()
+macs = []
+ipv4s = []
+ipv6s = []
+
+def get_mac():
+    mac = uuid.UUID(int=uuid.getnode()).hex[-12:]
+    return ":".join([mac[e:e+2] for e in range(0, 11, 2)])
+
+def refresh():
+    macs.clear()
+    ipv6s.clear()
+    ipv4s.clear()
+    fp = os.popen("lldpcli show interface -f json")
+    result = fp.read()
+    origin = json.loads(result).get("lldp")
+    inters = origin.get('interface')
+    for network_card_name in inters:
+        inter = inters.get(network_card_name)
+        via = inter.get('via')
+        if via != 'LLDP':
+            continue
+        chassis = inter.get('chassis')
+        for name in chassis:
+            target = chassis.get(name)
+            break
+        mac = target.get('id').get('value').replace(':', '-')
+        macs.append(mac)
+        ipv4s.append(target.get('mgmt-ip')[0])
+        ipv6s.append(target.get('mgmt-ip')[1])
+
+refresh()

@@ -18,7 +18,7 @@ class LLDP:
 
     # get_interface->get_neighbor->buildLink->buildNode
     def get_interface(self):
-        fp = os.popen("lldpcli show interface -f json",)
+        fp = os.popen("lldpcli show interface -f json")
         result = fp.read()
         object = json.loads(result)
         array = object.get('lldp').get('interface')
@@ -95,5 +95,5 @@ class LLDP:
         self.linklist.append(link)
 
     def build_node(self, network_card_name):
-        self.current.node_id = computer.host_name + computer.mac
+        self.current.node_id = computer.host_name + computer.macs[0]
         self.current.set_termination_points(network_card_name)

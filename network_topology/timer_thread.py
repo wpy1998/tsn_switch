@@ -9,7 +9,7 @@ import network_topology.lldp
 class TimerThread(threading.Thread):
     topology_id = hc.topology_id
     url_front = hc.urls.get('tsn-topology')
-    host_name = hc.host_name + hc.mac
+    host_name = hc.host_name + hc.macs[0]
     lldpImpl = network_topology.lldp.LLDP()
     topology = None
     _flag = True

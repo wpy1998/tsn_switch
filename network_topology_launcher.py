@@ -7,7 +7,7 @@ class NetworkTopologyLauncher:
     def __init__(self):
         self.topology_id = hc.topology_id
         self.url_front = hc.urls.get('tsn-topology')
-        self.host_name = hc.host_name + hc.mac
+        self.host_name = hc.host_name + hc.macs[0]
         self.lldpImpl = network_topology.lldp.LLDP()
 
     def startTimerThread(self):
