@@ -11,6 +11,7 @@ def refresh():
     origin = json.loads(result).get("lldp")
     inters = origin.get('interface')
     for network_card_name in inters:
+        # print(network_card_name)
         inter = inters.get(network_card_name)
         via = inter.get('via')
         if via != 'LLDP':
@@ -22,7 +23,7 @@ def refresh():
         mac = target.get('id').get('value').replace(':', '-')
         macs.append(mac)
         mgmt_ip = target.get('mgmt-ip')
-        print(mgmt_ip)
+        # print(mgmt_ip)
         ipv4s.append(mgmt_ip[0])
         ipv6s.append(mgmt_ip[1])
 
