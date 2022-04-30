@@ -59,3 +59,7 @@ if len(macs) == 0:
     host_merge = host_name
 else:
     host_merge = host_name + macs[0]
+
+port = 830
+username = 'wpy'
+password = '22003x'

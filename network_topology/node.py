@@ -20,9 +20,9 @@ class Node:
             tps.append(tp)
         node['termination-point'] = tps
 
-        node['port'] = 1830
-        node['username'] = 'wpy'
-        node['password'] = '22003x'
+        node['port'] = hc.port
+        node['username'] = hc.username
+        node['password'] = hc.password
         return node
 
     def set_termination_points(self, tp):
