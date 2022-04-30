@@ -15,5 +15,5 @@ if __name__ == "__main__":
     while True:
         next = input()
         if next == 'exit' or next == 'quit' or next == 'stop':
-            launcher.stopTimeThread()
+            launcher.stopTimerThread()
             break

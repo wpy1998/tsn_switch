@@ -25,8 +25,8 @@ def refresh():
 
 def add_computer_message(inter):
     via = inter.get('via')
-    if via != 'LLDP':
-        return
+    # if via != 'LLDP':
+    #     return
     chassis = inter.get('chassis')
     for name in chassis:
         target = chassis.get(name)

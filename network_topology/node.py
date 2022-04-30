@@ -19,6 +19,10 @@ class Node:
             tp['tp-id'] = tp_str
             tps.append(tp)
         node['termination-point'] = tps
+
+        node['port'] = 1830
+        node['username'] = 'wpy'
+        node['password'] = '22003x'
         return node
 
     def set_termination_points(self, tp):
