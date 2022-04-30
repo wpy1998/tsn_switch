@@ -53,4 +53,9 @@ macs = []
 ipv4s = []
 ipv6s = []
 refresh()
-host_merge = host_name + macs[0]
+print(ipv4s, macs, ipv6s, host_name)
+if len(macs) == 0:
+    print('--Did not find suitable mac--')
+    host_merge = host_name
+else:
+    host_merge = host_name + macs[0]

@@ -42,7 +42,7 @@ class LLDP:
             network_card = array.get(network_card_name)
             via = network_card.get('via')
             if via != 'LLDP':
-                print("there is no LLDP network card")
+                return
             neighbor = self.get_neighbor(network_card_name)
             if neighbor != None:
                 self.build_target_link(network_card_name, neighbor)
