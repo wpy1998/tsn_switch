@@ -5,7 +5,6 @@ import network_topology_launcher
 
 if __name__ == "__main__":
     cuc_ip = 'localhost'
-    print(hc.macs, hc.ipv4s, hc.ipv6s)
     print('************************************************')
     print('current cuc_ip: ', hc.cuc_ip)
     print('you can change the cuc_ip in hardware.computer')
