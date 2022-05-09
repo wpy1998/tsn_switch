@@ -108,7 +108,7 @@ class LLDP:
         self.current.set_termination_points(network_card_name)
 
     def get_speed(self, destination_ip):
-        fp = os.popen('mtr -r ' + destination_ip + ' -j')
+        fp = os.popen('mtr -r -s 64 ' + destination_ip + ' -j')
         result = fp.read()
         if len(result) == 0:
             return None
