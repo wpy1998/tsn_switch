@@ -110,3 +110,16 @@ class LLDP:
     def get_speed(self, destination_ip):
         fp = os.popen('mtr -r ' + destination_ip + ' -j')
         result = fp.read()
+        if len(result) == 0:
+            return None
+        report = json.loads(result).get('report')
+        mtr = report.get('mtr')
+        hubs = report.get('hubs')
+        obj = hubs[0]
+        speed = {}
+        speed['packet-size'] = mtr.get('psize')
+        speed['loss'] = obj.get('Loss%')
+        speed['best'] = obj.get('Best')
+        speed['worst'] = obj.get('Wrst')
+        speed['avg'] = obj.get('Avg')
+        return speed
