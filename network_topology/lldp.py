@@ -49,7 +49,7 @@ class LLDP:
             self.build_node(network_card_name)
 
     def get_neighbor(self, network_card_name):
-        fp = os.popen('lldpcli show neighbor ports ' + network_card_name + ' summary -f json')
+        fp = os.popen('lldpcli show neighbor ports ' + network_card_name + ' -f json')
         result = fp.read()
         interfaces = json.loads(result).get('lldp').get('interface')
         # print(len(interfaces))
@@ -58,10 +58,12 @@ class LLDP:
                 object = interfaces[i]
                 ttl = int(object.get(network_card_name).get("port").get("ttl"))
                 # print(ttl)
-                if ttl < 10000:
+                chassis = object.get(network_card_name).get('chassis')
+                for var in chassis:
+                    neighbor_name = var
                     break
-                else:
-                    object = None
+                if chassis.get('id') == None and chassis.get(neighbor_name).get('id') != None:
+                    break
         else:
             object = interfaces
             ttl = int(object.get(network_card_name).get("port").get("ttl"))
@@ -85,6 +87,13 @@ class LLDP:
             return
         link = nl.Link(computer.host_merge, network_card_name,
                                     neighbor_name, neighbor_card_name)
+        obj = neighbor.get('chassis').get(neighbor_name).get('mgmt-ip')
+        if len(obj) > 1:
+            dest_ip = obj[0]
+        else:
+            dest_ip = obj
+        speed = self.get_speed(dest_ip)
+        link.set_speed(speed)
         self.linklist.append(link)
 
     def build_empty_link(self, network_card_name, neighbor):
@@ -97,3 +106,7 @@ class LLDP:
     def build_node(self, network_card_name):
         self.current.node_id = computer.host_merge
         self.current.set_termination_points(network_card_name)
+
+    def get_speed(self, destination_ip):
+        fp = os.popen('mtr -r ' + destination_ip + ' -j')
+        result = fp.read()

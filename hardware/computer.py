@@ -35,8 +35,12 @@ def add_computer_message(inter):
     macs.append(mac)
     mgmt_ip = target.get('mgmt-ip')
     # print(mgmt_ip)
-    ipv4s.append(mgmt_ip[0])
-    ipv6s.append(mgmt_ip[1])
+    if len(mgmt_ip) > 1:
+        ipv4s.append(mgmt_ip[0])
+        ipv6s.append(mgmt_ip[1])
+    else:
+        ipv4s.append(mgmt_ip)
+        ipv6s.append('0000:0000:0000:0000:0000:0000:0000:0000')
 
 topology_id = 'tsn-network'
 host_name = socket.gethostname()
