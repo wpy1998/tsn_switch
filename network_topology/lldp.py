@@ -27,10 +27,10 @@ class LLDP:
                 network_card_name = ''
                 for var in object:
                     network_card_name = var
-                network_card = object.get(network_card_name)
-                via = network_card.get('via')
-                if via != 'LLDP':
-                    continue
+                # network_card = object.get(network_card_name)
+                # via = network_card.get('via')
+                # if via != 'LLDP':
+                #     continue
                 neighbor = self.get_neighbor(network_card_name)
                 if neighbor != None:
                     self.build_target_link(network_card_name, neighbor)
@@ -39,10 +39,10 @@ class LLDP:
             network_card_name = ''
             for var in array:
                 network_card_name = var
-            network_card = array.get(network_card_name)
-            via = network_card.get('via')
-            if via != 'LLDP':
-                return
+            # network_card = array.get(network_card_name)
+            # via = network_card.get('via')
+            # if via != 'LLDP':
+            #     return
             neighbor = self.get_neighbor(network_card_name)
             if neighbor != None:
                 self.build_target_link(network_card_name, neighbor)
@@ -80,14 +80,17 @@ class LLDP:
     def build_target_link(self, network_card_name, neighbor):
         chassis = neighbor.get("chassis")
         for var in chassis:
-            neighbor_name = var
-        neighbor_card_name = neighbor.get("port").get("descr")
-        if(neighbor_name == None or neighbor_card_name == None):
+            dest_node = var
+        dest_tp = neighbor.get("port").get("descr")
+        dest_mac = neighbor.get('port').get('id').get('value')
+
+        if(dest_node == None or dest_tp == None):
             self.build_empty_link(network_card_name, neighbor)
             return
-        link = nl.Link(computer.host_merge, network_card_name,
-                                    neighbor_name, neighbor_card_name)
-        obj = neighbor.get('chassis').get(neighbor_name).get('mgmt-ip')
+
+        link = nl.Link(computer.host_merge, network_card_name,dest_node + dest_mac,
+                       dest_tp, dest_mac)
+        obj = neighbor.get('chassis').get(dest_node).get('mgmt-ip')
         if len(obj) > 1:
             dest_ip = obj[0]
         else:
@@ -98,9 +101,10 @@ class LLDP:
 
     def build_empty_link(self, network_card_name, neighbor):
         # print(json.dumps(neighbor))
-        mac = neighbor.get("chassis").get("id").get("value")
+        dest_node = neighbor.get("chassis").get("id").get("value")
+        dest_mac = neighbor.get('port').get('id').get('value')
         link = nl.Link(computer.host_merge, network_card_name,
-                                    mac, mac)
+                                    dest_node + dest_mac, dest_mac, dest_mac)
         self.linklist.append(link)
 
     def build_node(self, network_card_name):

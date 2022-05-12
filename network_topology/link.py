@@ -1,9 +1,10 @@
 class Link:
-    def __init__(self, source_node, source_tp, dest_node, dest_tp):
+    def __init__(self, source_node, source_tp, dest_node, dest_tp, dest_mac):
         self.source_node = source_node
         self.source_tp = source_tp
         self.dest_node = dest_node
         self.dest_tp = dest_tp
+        self.dest_mac = dest_mac
         self.speed = None
         self.link_id = str(source_node) + "(" + str(source_tp) + ")--" + str(dest_node) + "(" + \
                        str(dest_tp) + ")"

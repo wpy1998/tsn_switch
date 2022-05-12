@@ -18,5 +18,5 @@ class NetworkTopologyLauncher:
 
     def stopTimerThread(self):
         print('--Thread: TimerThread interrupted--')
-        if self.timerThread is not None and self.timerThread.isAlive():
+        if self.timerThread is not None and self.timerThread.is_alive():
             self.timerThread.stop()

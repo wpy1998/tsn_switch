@@ -1,7 +1,6 @@
 # -- coding:UTF-8 --
 import hardware.computer as hc
-from network_topology import lldp
-import network_topology_launcher
+import network_topology_launcher as ntl
 
 if __name__ == "__main__":
     cuc_ip = 'localhost'
@@ -10,8 +9,7 @@ if __name__ == "__main__":
     print('you can change the cuc_ip in hardware.computer')
     print('Netconf Server: port, username, password set in hardware.computer')
     print('*****************************************************************')
-    lldpImpl = lldp.LLDP()
-    launcher = network_topology_launcher.NetworkTopologyLauncher()
+    launcher = ntl.NetworkTopologyLauncher()
     launcher.startTimerThread()
     while True:
         next = input()
