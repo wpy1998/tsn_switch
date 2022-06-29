@@ -91,10 +91,11 @@ class LLDP:
         link = nl.Link(computer.host_merge, network_card_name,dest_node + dest_mac,
                        dest_tp, dest_mac)
         obj = neighbor.get('chassis').get(dest_node).get('mgmt-ip')
-        if len(obj) > 1:
-            dest_ip = obj[0]
-        else:
-            dest_ip = obj
+        # if len(obj) > 1:
+        #     dest_ip = obj[0]
+        # else:
+        #     dest_ip = obj
+        dest_ip = obj
         speed = self.get_speed(dest_ip)
         link.set_speed(speed)
         self.linklist.append(link)
