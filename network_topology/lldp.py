@@ -95,7 +95,7 @@ class LLDP:
             dest_ip = obj[0]
         else:
             dest_ip = obj
-        speed = self.get_speed(dest_ip)
+        speed = self.get_speed(dest_ip, network_card_name)
         link.set_speed(speed)
         self.linklist.append(link)
 
@@ -111,7 +111,7 @@ class LLDP:
         self.current.node_id = computer.host_merge
         self.current.set_termination_points(network_card_name)
 
-    def get_speed(self, destination_ip):
+    def get_speed(self, destination_ip, network_card_name):
         fp = os.popen('mtr -r -s 64 ' + destination_ip + ' -j')
         result = fp.read()
         if len(result) == 0:
@@ -121,9 +121,9 @@ class LLDP:
         hubs = report.get('hubs')
         obj = hubs[0]
         speed = {}
-        speed['packet-size'] = mtr.get('psize')
+        speed['sending-speed'] = mtr.get('psize')
         speed['loss'] = obj.get('Loss%')
-        speed['best'] = obj.get('Best')
-        speed['worst'] = obj.get('Wrst')
-        speed['avg'] = obj.get('Avg')
+        speed['best-transmission-delay'] = obj.get('Best')
+        speed['worst-transmission-delay'] = obj.get('Wrst')
+        speed['avg-transmission-delay'] = obj.get('Avg')
         return speed
