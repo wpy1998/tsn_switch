@@ -53,6 +53,8 @@ class LLDP:
         result = fp.read()
         interfaces = json.loads(result).get('lldp').get('interface')
         # print(len(interfaces))
+        if(interfaces == None):
+            return
         if(len(interfaces) > 1):
             for i in range(len(interfaces)):
                 object = interfaces[i]
