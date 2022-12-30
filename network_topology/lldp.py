@@ -12,6 +12,9 @@ class LLDP:
         self.refresh()
         self.get_interface()
 
+    def __int__(self, test):
+        print(test)
+
     def refresh(self):
         self.linklist.clear()
         self.current.refresh()
@@ -97,7 +100,7 @@ class LLDP:
             dest_ip = obj[0]
         else:
             dest_ip = obj
-        speed = self.get_speed(dest_ip, network_card_name)
+        speed = self.get_delay_speed(dest_ip, network_card_name)
         link.set_speed(speed)
         self.linklist.append(link)
 
@@ -113,7 +116,7 @@ class LLDP:
         self.current.node_id = computer.host_merge
         self.current.set_termination_points(network_card_name)
 
-    def get_speed(self, destination_ip, network_card_name):
+    def get_delay_speed(self, destination_ip, network_card_name):
         fp = os.popen('mtr -r -s 64 ' + destination_ip + ' -j')
         result = fp.read()
         if len(result) == 0:
@@ -123,9 +126,26 @@ class LLDP:
         hubs = report.get('hubs')
         obj = hubs[0]
         speed = {}
-        speed['sending-speed'] = mtr.get('psize')
+        speed['sending-speed'] = self.get_sending_speed(network_card_name=network_card_name)
         speed['loss'] = obj.get('Loss%')
         speed['best-transmission-delay'] = obj.get('Best')
         speed['worst-transmission-delay'] = obj.get('Wrst')
         speed['avg-transmission-delay'] = obj.get('Avg')
         return speed
+
+    def get_sending_speed(self, network_card_name):
+        sendingSpeed = 0
+        fp = os.popen('ip -4 -j address')
+        result = fp.read()
+        if len(result) == 0:
+            return None
+        if result[0] != '[':
+            result = '[' + result + ']'
+        report = json.loads(result)
+        for network_card in report:
+            # print(network_card)
+            ifname = network_card.get("ifname")
+            if ifname == network_card_name:
+                sendingSpeed = network_card.get("txqlen")
+                break
+        return sendingSpeed
