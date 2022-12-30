@@ -32,10 +32,19 @@ def add_computer_message(inter):
         target = chassis.get(name)
         break
     mac = target.get('id').get('value').replace(':', '-')
-    macs.append(mac)
+    tag = 0
+    for ori in macs:
+        if ori == mac:
+            tag = 1
+            break
+    if tag == 0:
+        macs.append(mac)
     mgmt_ip = target.get('mgmt-ip')
     # print(mgmt_ip)
     if len(mgmt_ip) > 1:
+        for ip in ipv4s:
+            if ip == mgmt_ip[0]:
+                return
         ipv4s.append(mgmt_ip[0])
         ipv6s.append(mgmt_ip[1])
     else:
