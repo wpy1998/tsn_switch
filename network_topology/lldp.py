@@ -12,9 +12,6 @@ class LLDP:
         self.refresh()
         self.get_interface()
 
-    def __int__(self, test):
-        print(test)
-
     def refresh(self):
         self.linklist.clear()
         self.current.refresh()
