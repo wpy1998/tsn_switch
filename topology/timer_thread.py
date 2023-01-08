@@ -5,13 +5,13 @@ import json
 import hardware.computer as hc
 
 class TimerThread(threading.Thread):
+    _flag = True
     def __int__(self):
         super().__init__()
         self.topology_id = hc.topology_id
         self.url_front = hc.urls.get('tsn-topology')
         self.host_name = hc.host_name
         self.time_tap = 0
-        self._flag = True
 
     def run(self):
         while True:

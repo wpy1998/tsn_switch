@@ -62,6 +62,8 @@ class Detector:
                 third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
                 neighbor = self.extract_tcpdump(third_terminals)
                 object["neighbor"] = neighbor
+                if(neighbor['mac'] == object.get("ether")):
+                    origin.pop(key)
 
                 mid_object[key] = object
         origin = mid_object
