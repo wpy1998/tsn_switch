@@ -33,12 +33,13 @@ class NetworkCard:
         self.speed = int(speed)
         self.node_id = self.host_name + self.mac
 
-        neighbor = origin.get("neighbor")
-        self.ip2 = neighbor.get("ip")
-        self.host_name2 = neighbor.get("host-name")
-        self.mac2 = neighbor.get("mac")
-        self.ipv6s = neighbor.get("ipv6")
-        self.name2 = neighbor.get("tp")
+        if(origin.get("neighbor") != None):
+            neighbor = origin.get("neighbor")
+            self.ip2 = neighbor.get("ip")
+            self.host_name2 = neighbor.get("host-name")
+            self.mac2 = neighbor.get("mac")
+            self.ipv6s = neighbor.get("ipv6")
+            self.name2 = neighbor.get("tp")
 
         self.link_id = self.host_name + "(" + self.name + ")--" + self.host_name2 + "(" + self.name2 + ")"
 

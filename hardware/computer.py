@@ -26,7 +26,7 @@ def get_node_json():
     address['id'] = 0
     address['first-seen'] = first_seen
     address['mac'] = mac.replace("-", ":")
-    address['last-seen'] = time.time()
+    address['last-seen'] = int(time.time())
     address['ip'] = ip
     node['addresses'] = addresses
 
@@ -57,7 +57,7 @@ urls = {
                   ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/"
 }
 
-first_seen = time.time()
+first_seen = int(time.time())
 port = 830
 username = 'wpy'
 password = '22003x'

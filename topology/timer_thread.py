@@ -6,16 +6,12 @@ import hardware.computer as hc
 
 class TimerThread(threading.Thread):
     _flag = True
-    topology_id = ""
-    url_front = ""
-    host_name = ""
+    topology_id = hc.topology_id
+    url_front = hc.urls.get('tsn-topology')
+    host_name = hc.host_name
     time_tap = 1
     def __int__(self):
         super().__init__()
-        self.topology_id = hc.topology_id
-        self.url_front = hc.urls.get('tsn-topology')
-        self.host_name = hc.host_name
-        self.time_tap = 0
 
     def run(self):
         self.registerSwitch()
@@ -31,7 +27,10 @@ class TimerThread(threading.Thread):
     def registerSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
         node = hc.get_node_json()
-        httpInfo.put_info(url + '/node/' + node['node-id'], json.dumps(node))
+        nodes = {}
+        nodes['node'] = node
+        print(url + '/node/' + node['node-id'])
+        httpInfo.put_info(url + '/node/' + node['node-id'], json.dumps(nodes))
         print('<TSN switch> register node to controller <TSN switch>')
         # nodes = self.topology.get_json().get('node')
         # for node in nodes:
