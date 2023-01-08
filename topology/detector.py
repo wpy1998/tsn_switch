@@ -57,6 +57,10 @@ class Detector:
                 if(ethtool.get("Speed") == None):
                     continue
                 object["ethtool"] = ethtool
+
+                third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
+                tcpdump = self.extract_tcpdump(third_terminals)
+
                 mid_object[key] = object
         origin = mid_object
         return origin
@@ -74,6 +78,12 @@ class Detector:
                     origin[temp[j]] = temp[j + 1]
                     j = j + 2
             i = i + 1
+        return origin
+
+    def extract_tcpdump(self, terminals):
+        origin = {}
+        for terminal in terminals:
+            print(terminal)
         return origin
 
     def extract_lldp(self):
