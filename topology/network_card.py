@@ -11,6 +11,12 @@ class NetworkCard:
         self.ipv6 = "::1"
         self.mac = ""
 
+        self.name2 = ""
+        self.host_name2 = ""
+        self.ip2 = ""
+        self.ipv6s = ""
+        self.mac2 = ""
+
     def load_linux_object(self, origin):
         self.mac = origin.get("ether").replace(":", "-")
         self.ip = origin.get("inet")
@@ -26,6 +32,13 @@ class NetworkCard:
                 break
         self.speed = int(speed)
         self.node_id = self.host_name + self.mac
+
+        neighbor = origin.get("neighbor")
+        self.ip2 = neighbor.get("ip")
+        self.host_name2 = neighbor.get("host-name")
+        self.mac2 = neighbor.get("mac")
+        self.ipv6s = neighbor.get("ipv6")
+        self.name2 = neighbor.get("tp")
 
     def get_attachment_point_json(self):
         attachment_point = {}

@@ -60,7 +60,8 @@ class Detector:
                 object["ethtool"] = ethtool
 
                 third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
-                tcpdump = self.extract_tcpdump(third_terminals)
+                neighbor = self.extract_tcpdump(third_terminals)
+                object["neighbor"] = neighbor
 
                 mid_object[key] = object
         origin = mid_object
@@ -114,6 +115,8 @@ class Detector:
     # 0 packets dropped by kernel
     def extract_tcpdump(self, terminals):
         origin = {}
+        if(len(terminals) < 19):
+            return origin
         mid_list = []
         temp = terminals[0].split(" ")
         for i in range(len(temp)):
@@ -128,7 +131,6 @@ class Detector:
         origin['ipv6'] = temp[1]
         temp = terminals[18].split(": ")
         origin['tp'] = temp[1]
-        print(origin)
         return origin
 
     def extract_mtr(self):
