@@ -6,6 +6,10 @@ import hardware.computer as hc
 
 class TimerThread(threading.Thread):
     _flag = True
+    topology_id = ""
+    url_front = ""
+    host_name = ""
+    time_tap = 0
     def __int__(self):
         super().__init__()
         self.topology_id = hc.topology_id
