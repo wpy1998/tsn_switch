@@ -65,6 +65,9 @@ class Detector:
                 if(neighbor['mac'] == object.get("ether")):
                     continue
 
+                forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
+                self.extract_mtr(forth_terminals)
+
                 mid_object[key] = object
         origin = mid_object
         return origin
@@ -133,8 +136,10 @@ class Detector:
         print(origin['mac'])
         return origin
 
-    def extract_mtr(self):
+    def extract_mtr(self, terminals):
         origin = {}
+        for i in range(len(terminals)):
+            print(terminals[i])
         return origin
 
     def run_command(self, command):
