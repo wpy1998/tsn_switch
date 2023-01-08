@@ -81,7 +81,6 @@ class Detector:
             i = i + 1
         return origin
 
-# tcpdump: listening on enp2s0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
     # 17:29:26.786821 86:bb:ca:6f:9d:8e > 01:80:c2:00:00:0e, ethertype LLDP (0x88cc), length 207: LLDP, length 193
     # 	Chassis ID TLV (1), length 7
     # 	  Subtype MAC address (4): 86:bb:ca:6f:9d:8e
@@ -115,9 +114,14 @@ class Detector:
     # 0 packets dropped by kernel
     def extract_tcpdump(self, terminals):
         origin = {}
-        temp = terminals[1].split(" ")
+        mid_list = []
+        temp = terminals[0].split(" ")
         for i in range(len(temp)):
-            print(temp[i])
+            if(len(temp[i]) != 0):
+                mid_list.append(temp[i])
+        print(temp[1])
+        temp = terminals[13].split(": ")
+        print(temp[1])
         return origin
 
     def extract_mtr(self):
