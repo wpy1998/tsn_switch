@@ -121,12 +121,12 @@ class Detector:
                 mid_list.append(temp[i])
         origin['mac'] = temp[1]
         temp = terminals[6].split(": ")
-        origin['host-name'] = temp[6]
+        origin['host-name'] = temp[1]
         temp = terminals[13].split(": ")
         origin['ip'] = temp[1]
-        temp = temp[16].split(": ")
+        temp = terminals[16].split(": ")
         origin['ipv6'] = temp[1]
-        temp = temp[18].split(": ")
+        temp = terminals[18].split(": ")
         origin['tp'] = temp[1]
         print(origin)
         return origin
