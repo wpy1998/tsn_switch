@@ -110,9 +110,6 @@ class Detector:
     # 	    PMD autoneg capability [10BASE-T hdx, 10BASE-T fdx, 100BASE-TX hdx, 100BASE-TX fdx, 1000BASE-T fdx] (0xec01)
     # 	    MAU type 1000BASET fdx (0x001e)
     # 	End TLV (0), length 0
-    # 1 packet captured
-    # 2 packets received by filter
-    # 0 packets dropped by kernel
     def extract_tcpdump(self, terminals):
         origin = {}
         if(len(terminals) < 19):
@@ -131,6 +128,7 @@ class Detector:
         origin['ipv6'] = temp[1]
         temp = terminals[18].split(": ")
         origin['tp'] = temp[1]
+        print(origin['mac'])
         return origin
 
     def extract_mtr(self):

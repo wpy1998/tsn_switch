@@ -40,11 +40,29 @@ class NetworkCard:
         self.ipv6s = neighbor.get("ipv6")
         self.name2 = neighbor.get("tp")
 
+        self.link_id = self.host_name + "(" + self.name + ")--" + self.host_name2 + "(" + self.name2 + ")"
+
     def get_attachment_point_json(self):
         attachment_point = {}
+        attachment_point['tp-id'] = self.name
+        attachment_point['active'] = True
+        attachment_point['corresponding-tp'] = self.name2
         return attachment_point
 
     def get_termination_point_json(self):
         termination_point = {}
         termination_point['tp-id'] = self.name
         return termination_point
+
+    def get_link_json(self):
+        link = {}
+        link['link-id'] = self.link_id
+        source = {}
+        link['source'] = source
+        source['source-tp'] = self.name
+        source['source-node'] = self.host_name
+        dest = {}
+        link['destination'] = dest
+        dest['dest-tp'] = self.name2
+        dest['dest-node'] = self.host_name2
+        return link
