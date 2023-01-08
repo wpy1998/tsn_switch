@@ -22,14 +22,13 @@ class TimerThread(threading.Thread):
                 hc.refresh()
                 self.registerSwitch()
             self.time_tap = (self.time_tap + 1) % 180
-            self.block(5)
+            self.block(10)
 
     def registerSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
         node = hc.get_node_json()
         nodes = {}
         nodes['node'] = node
-        print(url + '/node/' + node['node-id'])
         httpInfo.put_info(url + '/node/' + node['node-id'], json.dumps(nodes))
         print('<TSN switch> register node to controller <TSN switch>')
         # nodes = self.topology.get_json().get('node')
@@ -41,13 +40,14 @@ class TimerThread(threading.Thread):
         #     print('<TSN switch> register node to controller <TSN switch>')
         #     httpInfo.put_info(url + '/node/' + node['node-id'], json.dumps(target))
         # links = self.topology.get_json().get('link')
-        # for link in links:
-        #     array = []
-        #     target = {}
-        #     array.append(link)
-        #     target['link'] = array
-        #     print('<TSN switch> register link to controller <TSN switch>')
-        #     httpInfo.put_info(url + '/link/' + link['link-id'], json.dumps(target))
+        for network_card in hc.network_cards:
+            link = network_card.get_link_json()
+            array = []
+            target = {}
+            array.append(link)
+            target['link'] = array
+            print('<TSN switch> register link to controller <TSN switch>')
+            httpInfo.put_info(url + '/link/' + link['link-id'], json.dumps(target))
 
     def removeSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
@@ -59,9 +59,10 @@ class TimerThread(threading.Thread):
         #     print('<TSN switch> remove node from controller <TSN switch>')
         #     httpInfo.delete_info(url + '/node/' + node['node-id'])
         # links = self.topology.get_json().get('link')
-        # for link in links:
-        #     print('<TSN switch> remove link from controller <TSN switch>')
-        #     httpInfo.delete_info(url + '/link/' + link['link-id'])
+        for network_card in hc.network_cards:
+            link = network_card.get_link_json()
+            print('<TSN switch> remove link from controller <TSN switch>')
+            httpInfo.delete_info(url + '/link/' + link['link-id'])
 
     def stop(self):
         self._flag = False
