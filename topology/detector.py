@@ -6,6 +6,7 @@ class Detector:
         self.second_command = "ethtool "
         self.third_command_front = "tcpdump -i "
         self.third_command_last = " -nev ether proto 0x88cc -c 1"
+        self.forth_command = "mtr -r -s 64 "
 
     def get_local_interface(self):
         terminals = self.run_command(self.first_command)
@@ -80,13 +81,46 @@ class Detector:
             i = i + 1
         return origin
 
+# tcpdump: listening on enp2s0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+    # 17:29:26.786821 86:bb:ca:6f:9d:8e > 01:80:c2:00:00:0e, ethertype LLDP (0x88cc), length 207: LLDP, length 193
+    # 	Chassis ID TLV (1), length 7
+    # 	  Subtype MAC address (4): 86:bb:ca:6f:9d:8e
+    # 	Port ID TLV (2), length 7
+    # 	  Subtype MAC address (3): 86:bb:ca:6f:9d:8e
+    # 	Time to Live TLV (3), length 2: TTL 120s
+    # 	System Name TLV (5), length 9: localhost
+    # 	System Description TLV (6), length 82
+    # 	  NXP LSDK 2004 main Linux 5.4.3 #5 SMP PREEMPT Sun Aug 14 20:07:02 PDT 2022 aarch64
+    # 	System Capabilities TLV (7), length 4
+    # 	  System  Capabilities [Bridge, WLAN AP, Router, Station Only] (0x009c)
+    # 	  Enabled Capabilities [Bridge, Router] (0x0014)
+    # 	Management Address TLV (8), length 12
+    # 	  Management Address length 5, AFI IPv4 (1): 192.168.1.131
+    # 	  Interface Index Interface Numbering (2): 3
+    # 	Management Address TLV (8), length 24
+    # 	  Management Address length 17, AFI IPv6 (2): fe80::2058:d2ff:fe0a:3e4a
+    # 	  Interface Index Interface Numbering (2): 3
+    # 	Port Description TLV (4), length 4: eno0
+    # 	Organization specific TLV (127), length 9: OUI IEEE 802.3 Private (0x00120f)
+    # 	  Link aggregation Subtype (3)
+    # 	    aggregation status [supported], aggregation port ID 0
+    # 	Organization specific TLV (127), length 9: OUI IEEE 802.3 Private (0x00120f)
+    # 	  MAC/PHY configuration/status Subtype (1)
+    # 	    autonegotiation [supported, enabled] (0x03)
+    # 	    PMD autoneg capability [10BASE-T hdx, 10BASE-T fdx, 100BASE-TX hdx, 100BASE-TX fdx, 1000BASE-T fdx] (0xec01)
+    # 	    MAU type 1000BASET fdx (0x001e)
+    # 	End TLV (0), length 0
+    # 1 packet captured
+    # 2 packets received by filter
+    # 0 packets dropped by kernel
     def extract_tcpdump(self, terminals):
         origin = {}
-        for terminal in terminals:
-            print(terminal)
+        temp = terminals[1].split(" ")
+        for i in range(len(temp)):
+            print(temp[i])
         return origin
 
-    def extract_lldp(self):
+    def extract_mtr(self):
         origin = {}
         return origin
 
