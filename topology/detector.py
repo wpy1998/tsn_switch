@@ -119,9 +119,16 @@ class Detector:
         for i in range(len(temp)):
             if(len(temp[i]) != 0):
                 mid_list.append(temp[i])
-        print(temp[1])
+        origin['mac'] = temp[1]
+        temp = terminals[6].split(": ")
+        origin['host-name'] = temp[6]
         temp = terminals[13].split(": ")
-        print(temp[1])
+        origin['ip'] = temp[1]
+        temp = temp[16].split(": ")
+        origin['ipv6'] = temp[1]
+        temp = temp[18].split(": ")
+        origin['tp'] = temp[1]
+        print(origin)
         return origin
 
     def extract_mtr(self):
