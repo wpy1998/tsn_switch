@@ -1,55 +1,49 @@
 import socket
 import json
 import os
+import time
+import topology.detector as td
+import topology.network_card as tn
+
 
 def refresh():
-    macs.clear()
-    ipv6s.clear()
-    ipv4s.clear()
-    fp = os.popen("lldpcli show interface -f json")
-    result = fp.read()
-    origin = json.loads(result).get("lldp")
-    inters = origin.get('interface')
-    if len(inters) > 1:
-        for obj in inters:
-            network_card_name = ''
-            for obj1 in obj:
-                network_card_name = obj1
-            add_computer_message(obj.get(network_card_name))
-    else:
-        network_card_name = ''
-        for obj in inters:
-            network_card_name = obj
-        add_computer_message(inters.get(network_card_name))
+    network_cards.clear()
+    network_card_object = detector.get_local_interface()
+    for key in network_card_object.keys():
+        network_card = tn.NetworkCard(name=key, host_name=host_name)
+        network_card.load_linux_object(network_card_object.get(key))
+        network_cards.append(network_card)
+
+def get_node_json():
+    node = {}
+    node['node-id'] = host_name + mac
+    node['node-type'] = 'switch'
+    node['id'] = mac.replace(":", "-")
+
+    addresses = []
+    address = {}
+    addresses.append(address)
+    address['id'] = 0
+    address['first-seen'] = first_seen
+    address['mac'] = mac.replace("-", ":")
+    address['last-seen'] = time.time()
+    address['ip'] = ip
+    node['addresses'] = addresses
+
+    termination_points = []
+    node['termination-point'] = termination_points
+    attachment_points = []
+    node['attachment-points'] = attachment_points
+
+    for network_card in network_cards:
+        termination_points.append(network_card.get_termination_point_json())
+        attachment_points.append(network_card.get_attachment_point_json())
+    return json.dumps(node)
 
 
-def add_computer_message(inter):
-    via = inter.get('via')
-    # if via != 'LLDP':
-    #     return
-    chassis = inter.get('chassis')
-    for name in chassis:
-        target = chassis.get(name)
-        break
-    mac = target.get('id').get('value').replace(':', '-')
-    tag = 0
-    for ori in macs:
-        if ori == mac:
-            tag = 1
-            break
-    if tag == 0:
-        macs.append(mac)
-    mgmt_ip = target.get('mgmt-ip')
-    # print(mgmt_ip)
-    if len(mgmt_ip) > 1:
-        for ip in ipv4s:
-            if ip == mgmt_ip[0]:
-                return
-        ipv4s.append(mgmt_ip[0])
-        ipv6s.append(mgmt_ip[1])
-    else:
-        ipv4s.append(mgmt_ip)
-        ipv6s.append('0000:0000:0000:0000:0000:0000:0000:0000')
+def get_link_json():
+    link = {}
+    return link
 
 topology_id = 'tsn-network'
 host_name = socket.gethostname()
@@ -62,17 +56,14 @@ urls = {
     'tsn-talker': "http://" + cuc_ip +
                   ":8181/restconf/config/tsn-talker-type:stream-talker-config/devices/"
 }
-macs = []
-ipv4s = []
-ipv6s = []
-refresh()
-print(ipv4s, macs, ipv6s, host_name)
-if len(macs) == 0:
-    print('--Did not find suitable mac--')
-    host_merge = host_name
-else:
-    host_merge = host_name + macs[0]
 
+first_seen = time.time()
 port = 830
 username = 'wpy'
 password = '22003x'
+
+network_cards = []
+detector = td.Detector()
+refresh()
+ip = network_cards[0].ip
+mac = network_cards[0].mac
