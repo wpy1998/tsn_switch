@@ -9,7 +9,7 @@ class TimerThread(threading.Thread):
     topology_id = ""
     url_front = ""
     host_name = ""
-    time_tap = 0
+    time_tap = 1
     def __int__(self):
         super().__init__()
         self.topology_id = hc.topology_id
@@ -18,6 +18,7 @@ class TimerThread(threading.Thread):
         self.time_tap = 0
 
     def run(self):
+        self.registerSwitch()
         while True:
             if not self._flag:
                 break
