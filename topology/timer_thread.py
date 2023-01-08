@@ -25,12 +25,12 @@ class TimerThread(threading.Thread):
                 hc.refresh()
                 self.registerSwitch()
             self.time_tap = (self.time_tap + 1) % 180
-            self.block(60)
+            self.block(5)
 
     def registerSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
         node = hc.get_node_json()
-        httpInfo.put_info(url + '/node/' + node.get('node-id'), json.dumps(node))
+        httpInfo.put_info(url + '/node/' + node['node-id'], json.dumps(node))
         print('<TSN switch> register node to controller <TSN switch>')
         # nodes = self.topology.get_json().get('node')
         # for node in nodes:
@@ -52,7 +52,7 @@ class TimerThread(threading.Thread):
     def removeSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
         node = hc.get_node_json()
-        httpInfo.delete_info(url + '/node/' + node.get('node-id'))
+        httpInfo.delete_info(url + '/node/' + node['node-id'])
         print('<TSN switch> remove node from controller <TSN switch>')
         # nodes = self.topology.get_json().get('node')
         # for node in nodes:

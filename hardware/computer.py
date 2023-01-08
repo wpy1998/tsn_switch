@@ -38,7 +38,7 @@ def get_node_json():
     for network_card in network_cards:
         termination_points.append(network_card.get_termination_point_json())
         attachment_points.append(network_card.get_attachment_point_json())
-    return json.dumps(node)
+    return node
 
 
 def get_link_json():
@@ -47,7 +47,7 @@ def get_link_json():
 
 topology_id = 'tsn-network'
 host_name = socket.gethostname()
-cuc_ip = "localhost"
+cuc_ip = "192.168.0.119"
 urls = {
     'tsn-topology': "http://" + cuc_ip +
                     ":8181/restconf/config/network-topology:network-topology/",
