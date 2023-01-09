@@ -47,7 +47,7 @@ def get_link_json():
 
 topology_id = 'tsn-network'
 host_name = socket.gethostname()
-cuc_ip = "192.168.0.119"
+cuc_ip = "localhost"
 urls = {
     'tsn-topology': "http://" + cuc_ip +
                     ":8181/restconf/config/network-topology:network-topology/",
@@ -65,5 +65,8 @@ password = '22003x'
 network_cards = []
 detector = td.Detector()
 refresh()
-ip = network_cards[0].ip
-mac = network_cards[0].mac
+ip = "0"
+mac = ""
+if(len(network_cards) != 0):
+    ip = network_cards[0].ip
+    mac = network_cards[0].mac
