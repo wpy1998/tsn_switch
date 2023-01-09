@@ -1,6 +1,6 @@
 import threading
 import time
-import httpInfo
+from restfulapi import httpInfo
 import json
 import hardware.computer as hc
 

@@ -1,6 +1,6 @@
 # -- coding:UTF-8 --
 import hardware.computer as hc
-import topology_launcher as tl
+from topology import topology_launcher as tl
 
 if __name__ == "__main__":
     cuc_ip = '192.168.0.119'
