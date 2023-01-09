@@ -1,3 +1,4 @@
+import json
 import os
 
 class Detector:
@@ -65,8 +66,13 @@ class Detector:
                 if(neighbor['mac'] == object.get("ether")):
                     continue
 
-                forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
-                self.extract_mtr(forth_terminals)
+                if(neighbor['ip'] != None):
+                    forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
+                    result = ""
+                    for line in forth_terminals:
+                        result = result + line
+                    delay = self.extract_mtr(result)
+                    object['delay'] = delay
 
                 mid_object[key] = object
         origin = mid_object
@@ -136,11 +142,17 @@ class Detector:
         print(origin['mac'])
         return origin
 
-    def extract_mtr(self, terminals):
-        origin = {}
-        for i in range(len(terminals)):
-            print(terminals[i])
-        return origin
+    def extract_mtr(self, result):
+        report = json.loads(result).get('report')
+        mtr = report.get('mtr')
+        hubs = report.get('hubs')
+        obj = hubs[0]
+        speed = {}
+        speed['loss'] = obj.get('Loss%')
+        speed['best-transmission-delay'] = obj.get('Best')
+        speed['worst-transmission-delay'] = obj.get('Wrst')
+        speed['avg-transmission-delay'] = obj.get('Avg')
+        return speed
 
     def run_command(self, command):
         fp = os.popen(command)

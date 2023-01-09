@@ -17,6 +17,12 @@ class NetworkCard:
         self.ipv6s = ""
         self.mac2 = ""
 
+        self.loss = 0
+        self.best = 0
+        self.avg = 0
+        self.worst = 0
+        self.sending_speed = 0
+
     def load_linux_object(self, origin):
         self.mac = origin.get("ether").replace(":", "-")
         self.ip = origin.get("inet")
@@ -30,7 +36,7 @@ class NetworkCard:
                 speed = speed + mid_string[i]
             else:
                 break
-        self.speed = int(speed)
+        self.sending_speed = int(speed)
         self.node_id = self.host_name + self.mac
 
         if(origin.get("neighbor") != None):
@@ -40,6 +46,10 @@ class NetworkCard:
             self.mac2 = neighbor.get("mac")
             self.ipv6s = neighbor.get("ipv6")
             self.name2 = neighbor.get("tp")
+
+        if(origin.get("speed") != None):
+            self.speed = origin['speed']
+            self.speed['sending-speed'] = self.sending_speed
 
         self.link_id = self.host_name + self.mac + "(" + self.name + ")--" + \
                        self.host_name2 + self.mac2 + "(" + self.name2 + ")"
@@ -67,4 +77,5 @@ class NetworkCard:
         link['destination'] = dest
         dest['dest-tp'] = self.name2
         dest['dest-node'] = self.host_name2 + self.mac2
+        link['speed'] = self.speed
         return link
