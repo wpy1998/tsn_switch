@@ -50,10 +50,20 @@ class Detector:
                     x_object[elements[j]] = elements[j + 1]
                     j = j + 2
 
+        record = {}
+        for key in origin.keys():
+            temp_object = origin.get(key)
+            temp_mac = temp_object.get("ether")
+            if(record.get(temp_mac) == None and temp_object.get("inet") != None):
+                record[temp_mac] = temp_object.get("inet")
+
         mid_object = {}
         for key in origin.keys():
             if(key != "lo" and origin.get(key).get("scopeid") != None):
                 object = origin.get(key)
+                if(object.get("inet") == None):
+                    temp_mac = object.get("ether")
+                    object['inet'] = record.get(temp_mac)
                 second_terminals = self.run_command(self.second_command + key)
                 ethtool = self.extract_ethtool(second_terminals)
                 if(ethtool.get("Speed") == None):

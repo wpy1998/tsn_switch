@@ -77,5 +77,8 @@ class NetworkCard:
         link['destination'] = dest
         dest['dest-tp'] = self.name2
         dest['dest-node'] = self.host_name2 + self.mac2
-        link['speed'] = self.speed
+        if(self.sending_speed != None):
+            speed = {}
+            link['speed'] = speed
+            speed['sending-speed'] = self.sending_speed
         return link
