@@ -11,7 +11,13 @@ commands = [
     "brctl addif br0 swp1",
     "brctl addif br0 swp2",
     "brctl addif br0 swp3",
-    "ifconfig br0 up"
+    "ifconfig br0 up",
+    "lldptool -L -i eno2 adminStatus=rxtx",
+    "lldptool -L -i swp0 adminStatus=rxtx",
+    "lldptool -L -i swp1 adminStatus=rxtx",
+    "lldptool -L -i swp2 adminStatus=rxtx",
+    "lldptool -L -i swp3 adminStatus=rxtx",
+    "lldptool -L -i br0 adminStatus=rxtx"
            ]
 def run_command(command):
     os.popen(command)
