@@ -65,6 +65,7 @@ class Detector:
                     result = result + line
                 delay = self.extract_mtr(result)
                 object['delay'] = delay
+            result[key] = object
         return result
 
     def extract_ifconfig(self, terminals):
