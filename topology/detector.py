@@ -24,6 +24,14 @@ class Detector:
         return origin
 
     def build_network_card(self, origin):
+        mac_map = {}
+        for key in origin.keys():
+            obj = origin.get(key)
+            mac = obj.get("ether")
+            ip = obj.get("inet")
+            print('mac = ' + mac + ', ip = ' + ip)
+            if(mac_map[mac] != None and ip != None):
+                mac_map[mac] = ip
         result = self.extract_network_card(origin)
         return result
 
