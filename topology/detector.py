@@ -116,7 +116,12 @@ class Detector:
         for key in origin.keys():
             temp_object = origin.get(key)
             temp_mac = temp_object.get("ether")
-            if(temp_object.get("inet") == None and keyMap[temp_mac] != None):
+            flag = True
+            for key2 in temp_object.keys():
+                if(key2 == "inet"):
+                    flag = False
+                    break
+            if(flag and keyMap[temp_mac] != None):
                 temp_object["inet"] = keyMap[temp_mac]
 
         mid_object = {}
