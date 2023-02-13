@@ -70,11 +70,12 @@ class Detector:
                     continue
                 object["ethtool"] = ethtool
 
-                third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
-                neighbor = self.extract_tcpdump(third_terminals)
-                object["neighbor"] = neighbor
-                if(neighbor['mac'] == object.get("ether")):
-                    continue
+                for epoch in range(3):
+                    third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
+                    neighbor = self.extract_tcpdump(third_terminals)
+                    object["neighbor"] = neighbor
+                    if(neighbor['mac'] != object.get("ether")):
+                        break
 
                 if(neighbor['ip'] != None):
                     forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
@@ -131,25 +132,33 @@ class Detector:
     # 	    PMD autoneg capability [10BASE-T hdx, 10BASE-T fdx, 100BASE-TX hdx, 100BASE-TX fdx, 1000BASE-T fdx] (0xec01)
     # 	    MAU type 1000BASET fdx (0x001e)
     # 	End TLV (0), length 0
+
+    #
     def extract_tcpdump(self, terminals):
         origin = {}
-        if(len(terminals) < 19):
-            return origin
-        mid_list = []
-        temp = terminals[0].split(" ")
-        for i in range(len(temp)):
-            if(len(temp[i]) != 0):
-                mid_list.append(temp[i])
-        origin['mac'] = temp[1]
-        temp = terminals[6].split(": ")
-        origin['host-name'] = temp[1]
-        temp = terminals[13].split(": ")
-        origin['ip'] = temp[1]
-        temp = terminals[16].split(": ")
-        origin['ipv6'] = temp[1]
-        temp = terminals[18].split(": ")
-        origin['tp'] = temp[1]
-        print(origin['mac'])
+        if(len(terminals) is 7):
+            mid_list = []
+            temp = terminals[0].split(" ")
+            for i in range(len(temp)):
+                if (len(temp[i]) != 0):
+                    mid_list.append(temp[i])
+            origin['mac'] = temp[1]
+        elif(len(terminals) is 28):
+            mid_list = []
+            temp = terminals[0].split(" ")
+            for i in range(len(temp)):
+                if(len(temp[i]) != 0):
+                    mid_list.append(temp[i])
+            origin['mac'] = temp[1]
+            temp = terminals[6].split(": ")
+            origin['host-name'] = temp[1]
+            temp = terminals[13].split(": ")
+            origin['ip'] = temp[1]
+            temp = terminals[16].split(": ")
+            origin['ipv6'] = temp[1]
+            temp = terminals[18].split(": ")
+            origin['tp'] = temp[1]
+            print(origin['mac'])
         return origin
 
     def extract_mtr(self, result):

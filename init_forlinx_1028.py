@@ -16,8 +16,7 @@ commands = [
     "lldptool -L -i swp0 adminStatus=rxtx",
     "lldptool -L -i swp1 adminStatus=rxtx",
     "lldptool -L -i swp2 adminStatus=rxtx",
-    "lldptool -L -i swp3 adminStatus=rxtx",
-    "lldptool -L -i br0 adminStatus=rxtx"
+    "lldptool -L -i swp3 adminStatus=rxtx"
            ]
 def run_command(command):
     os.popen(command)
