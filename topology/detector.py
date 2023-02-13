@@ -30,7 +30,12 @@ class Detector:
             mac = obj.get("ether")
             ip = obj.get("inet")
             print('mac = ' + mac + ', ip = ' + ip)
-            if(mac_map[mac] != None and ip != None):
+            flag = True
+            for key2 in mac_map:
+                if(key2 == mac):
+                    flag = False
+                    break
+            if(flag and ip != ""):
                 mac_map[mac] = ip
         result = self.extract_network_card(origin)
         return result
