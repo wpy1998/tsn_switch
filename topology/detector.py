@@ -24,20 +24,21 @@ class Detector:
         return origin
 
     def build_network_card(self, origin):
-        mac_map = {}
+        keyMap = {}
         for key in origin.keys():
             obj = origin.get(key)
             mac = obj.get("ether")
             ip = obj.get("inet")
-            print('mac = ' + mac + ', ip = ' + ip)
+            if(ip is None or mac is None):
+                continue
             flag = True
-            for key2 in mac_map:
+            for key2 in keyMap:
                 if(key2 == mac):
                     flag = False
                     break
             if(flag and ip != ""):
-                mac_map[mac] = ip
-        result = self.extract_network_card(origin)
+                keyMap[mac] = ip
+        result = self.extract_network_card(origin, keyMap)
         return result
 
     def build_tcpdump(self, origin):
@@ -112,13 +113,15 @@ class Detector:
                     j = j + 2
         return origin
 
-    def extract_network_card(self, origin):
+    def extract_network_card(self, origin, keyMap):
         record = {}
         for key in origin.keys():
             temp_object = origin.get(key)
             temp_mac = temp_object.get("ether")
-            if(record.get(temp_mac) == None and temp_object.get("inet") != None):
-                record[temp_mac] = temp_object.get("inet")
+            if(record.get(temp_mac) == None):
+                continue
+            if(temp_object.get("inet") == None and keyMap[temp_mac] != None):
+                temp_object["inet"] = keyMap[temp_mac]
 
         mid_object = {}
         for key in origin.keys():
