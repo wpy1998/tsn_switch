@@ -11,7 +11,46 @@ class Detector:
 
     def get_local_interface(self):
         terminals = self.run_command(self.first_command)
-        result = self.extract_network_card(terminals)
+        result = self.build_network_card(terminals)
+        return result
+
+    def build_network_card(self, terminals):
+        origin = self.extract_network_card(terminals)
+        print(origin)
+        return origin
+
+    def build_tcpdump(self, origin):
+        mid_object = {}
+        for key in origin.keys():
+            object = origin.get(key)
+            for epoch in range(1):
+                third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
+                neighbor = self.extract_tcpdump(third_terminals)
+                object["neighbor"] = neighbor
+                if (neighbor['mac'] != "" and neighbor['mac'] != object.get("ether")):
+                    break
+
+            # if (neighbor['ip'] is not ""):
+            #     forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
+            #     result = ""
+            #     for line in forth_terminals:
+            #         result = result + line
+            #     delay = self.extract_mtr(result)
+            #     object['delay'] = delay
+        return mid_object
+
+    def build_mtr(self, origin):
+        result = {}
+        for key in origin.keys():
+            object = origin.get(key)
+            neighbor = object['neighbor']
+            if (neighbor['ip'] is not ""):
+                forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
+                result = ""
+                for line in forth_terminals:
+                    result = result + line
+                delay = self.extract_mtr(result)
+                object['delay'] = delay
         return result
 
     def extract_network_card(self, terminals):
@@ -70,20 +109,20 @@ class Detector:
                     continue
                 object["ethtool"] = ethtool
 
-                for epoch in range(3):
-                    third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
-                    neighbor = self.extract_tcpdump(third_terminals)
-                    object["neighbor"] = neighbor
-                    if(neighbor['mac'] != object.get("ether")):
-                        break
-
-                if(neighbor['ip'] != None):
-                    forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
-                    result = ""
-                    for line in forth_terminals:
-                        result = result + line
-                    delay = self.extract_mtr(result)
-                    object['delay'] = delay
+                # for epoch in range(1):
+                #     third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
+                #     neighbor = self.extract_tcpdump(third_terminals)
+                #     object["neighbor"] = neighbor
+                #     if(neighbor['mac'] != "" and neighbor['mac'] != object.get("ether")):
+                #         break
+                #
+                # if(neighbor['ip'] is not ""):
+                #     forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
+                #     result = ""
+                #     for line in forth_terminals:
+                #         result = result + line
+                #     delay = self.extract_mtr(result)
+                #     object['delay'] = delay
 
                 mid_object[key] = object
         origin = mid_object
@@ -143,6 +182,7 @@ class Detector:
                 if (len(temp[i]) != 0):
                     mid_list.append(temp[i])
             origin['mac'] = temp[1]
+            origin['ip'] = ""
         elif(len(terminals) is 28):
             mid_list = []
             temp = terminals[0].split(" ")
@@ -159,6 +199,9 @@ class Detector:
             temp = terminals[18].split(": ")
             origin['tp'] = temp[1]
             print(origin['mac'])
+        else:
+            origin['mac'] = ""
+            origin['ip'] = ""
         return origin
 
     def extract_mtr(self, result):
