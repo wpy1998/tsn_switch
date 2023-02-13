@@ -11,13 +11,21 @@ class Detector:
 
     def get_local_interface(self):
         terminals = self.run_command(self.first_command)
-        result = self.build_network_card(terminals)
+        result = self.build_ifconfig(terminals)
+        print(json.dumps(result))
+        result = self.build_network_card(result)
+        print(json.dumps(result))
         result = self.build_tcpdump(result)
+        print(json.dumps(result))
         return result
 
-    def build_network_card(self, terminals):
-        origin = self.extract_network_card(terminals)
+    def build_ifconfig(self, terminals):
+        origin = self.extract_ifconfig(terminals)
         return origin
+
+    def build_network_card(self, origin):
+        result = self.extract_network_card(origin)
+        return result
 
     def build_tcpdump(self, origin):
         mid_object = {}
@@ -28,8 +36,8 @@ class Detector:
                 neighbor = self.extract_tcpdump(third_terminals)
                 object["neighbor"] = neighbor
                 if (neighbor['mac'] != "" and neighbor['mac'] != object.get("ether")):
-                    mid_object[key] = object
                     break
+            mid_object[key] = object
 
             # if (neighbor['ip'] is not ""):
             #     forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
@@ -54,7 +62,7 @@ class Detector:
                 object['delay'] = delay
         return result
 
-    def extract_network_card(self, terminals):
+    def extract_ifconfig(self, terminals):
         origin = {}
         for i in range(len(terminals)):
             mid_str = self.clear_brackets(terminals[i])
@@ -89,7 +97,9 @@ class Detector:
                 while(j < len(elements)):
                     x_object[elements[j]] = elements[j + 1]
                     j = j + 2
+        return origin
 
+    def extract_network_card(self, origin):
         record = {}
         for key in origin.keys():
             temp_object = origin.get(key)
