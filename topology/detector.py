@@ -12,11 +12,11 @@ class Detector:
     def get_local_interface(self):
         terminals = self.run_command(self.first_command)
         result = self.build_network_card(terminals)
+        result = self.build_tcpdump(result)
         return result
 
     def build_network_card(self, terminals):
         origin = self.extract_network_card(terminals)
-        print(origin)
         return origin
 
     def build_tcpdump(self, origin):
@@ -28,6 +28,7 @@ class Detector:
                 neighbor = self.extract_tcpdump(third_terminals)
                 object["neighbor"] = neighbor
                 if (neighbor['mac'] != "" and neighbor['mac'] != object.get("ether")):
+                    mid_object[key] = object
                     break
 
             # if (neighbor['ip'] is not ""):
