@@ -13,8 +13,8 @@ class Detector:
         terminals = self.run_command(self.first_command)
         result = self.build_ifconfig(terminals)
         result = self.build_network_card(result)
-        print(json.dumps(result))
         result = self.build_tcpdump(result)
+        result = self.build_mtr(result)
         print(json.dumps(result))
         return result
 
@@ -41,25 +41,17 @@ class Detector:
         return result
 
     def build_tcpdump(self, origin):
-        mid_object = {}
+        result = {}
         for key in origin.keys():
             object = origin.get(key)
-            for epoch in range(1):
+            for epoch in range(3):
                 third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
                 neighbor = self.extract_tcpdump(third_terminals)
                 object["neighbor"] = neighbor
                 if (neighbor['mac'] != "" and neighbor['mac'] != object.get("ether")):
                     break
-            mid_object[key] = object
-
-            # if (neighbor['ip'] is not ""):
-            #     forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
-            #     result = ""
-            #     for line in forth_terminals:
-            #         result = result + line
-            #     delay = self.extract_mtr(result)
-            #     object['delay'] = delay
-        return mid_object
+            result[key] = object
+        return result
 
     def build_mtr(self, origin):
         result = {}
@@ -118,7 +110,7 @@ class Detector:
             temp_mac = temp_object.get("ether")
             flag1 = self.search_key(keyMap, temp_mac)
             flag2 = self.search_key(temp_object, "inet")
-            if(flag1 and flag2):
+            if(flag1 and flag2 == False):
                 temp_object["inet"] = keyMap[temp_mac]
 
         mid_object = {}
