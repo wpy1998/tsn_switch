@@ -12,7 +12,6 @@ class Detector:
     def get_local_interface(self):
         terminals = self.run_command(self.first_command)
         result = self.build_ifconfig(terminals)
-        print(json.dumps(result))
         result = self.build_network_card(result)
         print(json.dumps(result))
         result = self.build_tcpdump(result)
@@ -114,12 +113,9 @@ class Detector:
         return origin
 
     def extract_network_card(self, origin, keyMap):
-        record = {}
         for key in origin.keys():
             temp_object = origin.get(key)
             temp_mac = temp_object.get("ether")
-            if(record.get(temp_mac) == None):
-                continue
             if(temp_object.get("inet") == None and keyMap[temp_mac] != None):
                 temp_object["inet"] = keyMap[temp_mac]
 
@@ -127,9 +123,6 @@ class Detector:
         for key in origin.keys():
             if(key != "lo" and origin.get(key).get("scopeid") != None):
                 object = origin.get(key)
-                if(object.get("inet") == None):
-                    temp_mac = object.get("ether")
-                    object['inet'] = record.get(temp_mac)
                 second_terminals = self.run_command(self.second_command + key)
                 ethtool = self.extract_ethtool(second_terminals)
                 if(ethtool.get("Speed") == None):
