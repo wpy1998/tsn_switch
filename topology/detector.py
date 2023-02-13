@@ -116,12 +116,9 @@ class Detector:
         for key in origin.keys():
             temp_object = origin.get(key)
             temp_mac = temp_object.get("ether")
-            flag = True
-            for key2 in temp_object.keys():
-                if(key2 == "inet"):
-                    flag = False
-                    break
-            if(flag and keyMap[temp_mac] != None):
+            flag1 = self.search_key(keyMap, temp_mac)
+            flag2 = self.search_key(temp_object, "inet")
+            if(flag1 and flag2):
                 temp_object["inet"] = keyMap[temp_mac]
 
         mid_object = {}
@@ -133,21 +130,6 @@ class Detector:
                 if(ethtool.get("Speed") == None):
                     continue
                 object["ethtool"] = ethtool
-
-                # for epoch in range(1):
-                #     third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
-                #     neighbor = self.extract_tcpdump(third_terminals)
-                #     object["neighbor"] = neighbor
-                #     if(neighbor['mac'] != "" and neighbor['mac'] != object.get("ether")):
-                #         break
-                #
-                # if(neighbor['ip'] is not ""):
-                #     forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
-                #     result = ""
-                #     for line in forth_terminals:
-                #         result = result + line
-                #     delay = self.extract_mtr(result)
-                #     object['delay'] = delay
 
                 mid_object[key] = object
         origin = mid_object
@@ -168,36 +150,6 @@ class Detector:
             i = i + 1
         return origin
 
-    # 17:29:26.786821 86:bb:ca:6f:9d:8e > 01:80:c2:00:00:0e, ethertype LLDP (0x88cc), length 207: LLDP, length 193
-    # 	Chassis ID TLV (1), length 7
-    # 	  Subtype MAC address (4): 86:bb:ca:6f:9d:8e
-    # 	Port ID TLV (2), length 7
-    # 	  Subtype MAC address (3): 86:bb:ca:6f:9d:8e
-    # 	Time to Live TLV (3), length 2: TTL 120s
-    # 	System Name TLV (5), length 9: localhost
-    # 	System Description TLV (6), length 82
-    # 	  NXP LSDK 2004 main Linux 5.4.3 #5 SMP PREEMPT Sun Aug 14 20:07:02 PDT 2022 aarch64
-    # 	System Capabilities TLV (7), length 4
-    # 	  System  Capabilities [Bridge, WLAN AP, Router, Station Only] (0x009c)
-    # 	  Enabled Capabilities [Bridge, Router] (0x0014)
-    # 	Management Address TLV (8), length 12
-    # 	  Management Address length 5, AFI IPv4 (1): 192.168.1.131
-    # 	  Interface Index Interface Numbering (2): 3
-    # 	Management Address TLV (8), length 24
-    # 	  Management Address length 17, AFI IPv6 (2): fe80::2058:d2ff:fe0a:3e4a
-    # 	  Interface Index Interface Numbering (2): 3
-    # 	Port Description TLV (4), length 4: eno0
-    # 	Organization specific TLV (127), length 9: OUI IEEE 802.3 Private (0x00120f)
-    # 	  Link aggregation Subtype (3)
-    # 	    aggregation status [supported], aggregation port ID 0
-    # 	Organization specific TLV (127), length 9: OUI IEEE 802.3 Private (0x00120f)
-    # 	  MAC/PHY configuration/status Subtype (1)
-    # 	    autonegotiation [supported, enabled] (0x03)
-    # 	    PMD autoneg capability [10BASE-T hdx, 10BASE-T fdx, 100BASE-TX hdx, 100BASE-TX fdx, 1000BASE-T fdx] (0xec01)
-    # 	    MAU type 1000BASET fdx (0x001e)
-    # 	End TLV (0), length 0
-
-    #
     def extract_tcpdump(self, terminals):
         origin = {}
         if(len(terminals) is 7):
@@ -240,6 +192,12 @@ class Detector:
         speed['worst-transmission-delay'] = obj.get('Wrst')
         speed['avg-transmission-delay'] = obj.get('Avg')
         return speed
+
+    def search_key(self, key_map, target):
+        for key in key_map.keys():
+            if(target == key):
+                return True
+        return False
 
     def run_command(self, command):
         fp = os.popen(command)
