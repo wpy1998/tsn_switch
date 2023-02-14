@@ -6,7 +6,7 @@ class Detector:
         self.first_command = "ifconfig -a"
         self.second_command = "ethtool "
         self.third_command_front = "tcpdump -i "
-        self.third_command_last = " -nev ether proto 0x88cc -c 1"
+        self.third_command_last = " -nev ether proto 0x88cc -c 2"
         self.forth_command = "mtr -r -s 64 "
 
     def get_local_interface(self):
@@ -43,14 +43,14 @@ class Detector:
     def build_tcpdump(self, origin):
         result = {}
         for key in origin.keys():
-            object = origin.get(key)
-            for epoch in range(3):
-                third_terminals = self.run_command(self.third_command_front + key + self.third_command_last)
-                neighbor = self.extract_tcpdump(third_terminals)
-                object["neighbor"] = neighbor
-                if (neighbor['mac'] != "" and neighbor['mac'] != object.get("ether")):
-                    break
-            result[key] = object
+            obj = origin.get(key)
+            third_terminals = self.run_command(self.third_command_front + key +
+                                               self.third_command_last)
+            neighbor = self.extract_tcpdump(third_terminals, obj.get("ether"))
+            obj["neighbor"] = neighbor
+            if (neighbor['mac'] != "" and neighbor['mac'] != obj.get("ether")):
+                break
+            result[key] = obj
         return result
 
     def build_mtr(self, origin):
@@ -143,8 +143,22 @@ class Detector:
             i = i + 1
         return origin
 
-    def extract_tcpdump(self, terminals):
+    def extract_tcpdump(self, terminals, target_mac):
+        packet = []
+        for i in range(len(terminals)):
+            if(terminals[i][0] >= '0' and terminals[i][0] <= '9'):
+                if(len(packet) != 0):
+                    origin = self.extract_single_tcpdump(packet)
+                    if(origin['mac'] == target_mac):
+                        return origin
+                    packet.clear()
+                packet.append(terminals[i])
+        return origin
+
+    def extract_single_tcpdump(self, terminals):
         origin = {}
+        for i in range(len(terminals)):
+            print(terminals[i])
         if(len(terminals) is 7):
             mid_list = []
             temp = terminals[0].split(" ")
