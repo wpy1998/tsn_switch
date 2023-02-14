@@ -49,8 +49,8 @@ class Detector:
             neighbor = self.extract_tcpdump(third_terminals, obj.get("ether"))
             obj["neighbor"] = neighbor
             if (neighbor['mac'] != "" and neighbor['mac'] != obj.get("ether")):
-                break
-            result[key] = obj
+                result[key] = obj
+                continue
         return result
 
     def build_mtr(self, origin):
@@ -149,16 +149,15 @@ class Detector:
             if(terminals[i][0] >= '0' and terminals[i][0] <= '9'):
                 if(len(packet) != 0):
                     origin = self.extract_single_tcpdump(packet)
-                    if(origin['mac'] == target_mac):
+                    if(origin['mac'] != target_mac and origin['mac'] != ""):
                         return origin
                     packet.clear()
-                packet.append(terminals[i])
+            packet.append(terminals[i])
+        origin = self.extract_single_tcpdump(packet)
         return origin
 
     def extract_single_tcpdump(self, terminals):
         origin = {}
-        for i in range(len(terminals)):
-            print(terminals[i])
         if(len(terminals) is 7):
             mid_list = []
             temp = terminals[0].split(" ")
