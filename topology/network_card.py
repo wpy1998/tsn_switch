@@ -43,9 +43,15 @@ class NetworkCard:
             neighbor = origin.get("neighbor")
             self.ip2 = neighbor.get("ip")
             self.host_name2 = neighbor.get("host-name")
+            if(self.host_name2 == None):
+                self.host_name2 = neighbor.get("mac")
             self.mac2 = neighbor.get("mac")
             self.ipv6s = neighbor.get("ipv6")
+            if(self.ipv6s == None):
+                self.ipv6s = ""
             self.name2 = neighbor.get("tp")
+            if(self.name2 == None):
+                self.name2 = ""
 
         if(origin.get("speed") != None):
             self.speed = origin['speed']
