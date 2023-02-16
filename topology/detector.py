@@ -15,7 +15,6 @@ class Detector:
         result = self.build_network_card(result)
         result = self.build_tcpdump(result)
         result = self.build_mtr(result)
-        print(json.dumps(result))
         return result
 
     def build_ifconfig(self, terminals):
@@ -48,6 +47,7 @@ class Detector:
                                                self.third_command_last)
             neighbor = self.extract_tcpdump(third_terminals, obj.get("ether"))
             obj["neighbor"] = neighbor
+            print('target = ' + neighbor['mac'] + ', current.mac = ' + obj['ether'])
             if (neighbor['mac'] != "" and neighbor['mac'] != obj.get("ether")):
                 result[key] = obj
                 continue
@@ -60,10 +60,10 @@ class Detector:
             neighbor = object['neighbor']
             if (neighbor['ip'] is not ""):
                 forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
-                result = ""
+                mid = ""
                 for line in forth_terminals:
-                    result = result + line
-                delay = self.extract_mtr(result)
+                    mid = mid + line
+                delay = self.extract_mtr(mid)
                 object['delay'] = delay
             result[key] = object
         return result
@@ -181,7 +181,6 @@ class Detector:
             origin['ipv6'] = temp[1]
             temp = terminals[18].split(": ")
             origin['tp'] = temp[1]
-            print(origin['mac'])
         else:
             origin['mac'] = ""
             origin['ip'] = ""

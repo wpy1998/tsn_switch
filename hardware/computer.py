@@ -16,7 +16,7 @@ def refresh():
 
 def get_node_json():
     node = {}
-    node['node-id'] = host_name + mac
+    node['node-id'] = mac.replace(":", "-")
     node['node-type'] = 'switch'
     node['id'] = mac.replace(":", "-")
 
@@ -40,14 +40,9 @@ def get_node_json():
         attachment_points.append(network_card.get_attachment_point_json())
     return node
 
-
-def get_link_json():
-    link = {}
-    return link
-
 topology_id = 'tsn-network'
 host_name = socket.gethostname()
-cuc_ip = "localhost"
+cuc_ip = "192.168.1.15"
 urls = {
     'tsn-topology': "http://" + cuc_ip +
                     ":8181/restconf/config/network-topology:network-topology/",

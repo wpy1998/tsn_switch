@@ -42,9 +42,9 @@ class NetworkCard:
         if(origin.get("neighbor") != None):
             neighbor = origin.get("neighbor")
             self.ip2 = neighbor.get("ip")
-            self.host_name2 = neighbor.get("host-name")
-            if(self.host_name2 == None):
-                self.host_name2 = neighbor.get("mac")
+            # self.host_name2 = neighbor.get("host-name")
+            # if(self.host_name2 == None):
+            #     self.host_name2 = ""
             self.mac2 = neighbor.get("mac")
             self.ipv6s = neighbor.get("ipv6")
             if(self.ipv6s == None):
@@ -57,8 +57,8 @@ class NetworkCard:
             self.speed = origin['speed']
             self.speed['sending-speed'] = self.sending_speed
 
-        self.link_id = self.host_name + self.mac + "(" + self.name + ")--" + \
-                       self.host_name2 + self.mac2 + "(" + self.name2 + ")"
+        self.link_id = self.mac + "(" + self.name + ")--" + \
+                       self.mac2 + "(" + self.name2 + ")"
 
     def get_attachment_point_json(self):
         attachment_point = {}
@@ -78,11 +78,11 @@ class NetworkCard:
         source = {}
         link['source'] = source
         source['source-tp'] = self.name
-        source['source-node'] = self.host_name + self.mac
+        source['source-node'] = self.mac.replace("-", ":")
         dest = {}
         link['destination'] = dest
         dest['dest-tp'] = self.name2
-        dest['dest-node'] = self.host_name2 + self.mac2
+        dest['dest-node'] = self.mac2.replace("-", ":")
         if(self.sending_speed != None):
             speed = {}
             link['speed'] = speed
