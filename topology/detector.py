@@ -5,13 +5,15 @@ class Detector:
     def __init__(self):
         self.first_command = "ifconfig -a"
         self.second_command = "ethtool "
-        self.third_command_front = "tcpdump -i "
-        self.third_command_last = " -nev ether proto 0x88cc -c 2"
-        self.forth_command = "mtr -r -s 64 "
+        self.third_command = "brctl show"
+        self.forth_command_front = "tcpdump -i "
+        self.forth_command_last = " -nev ether proto 0x88cc -c 2"
+        self.fifth_command = "mtr -r -s 64 "
 
     def get_local_interface(self):
         terminals = self.run_command(self.first_command)
         result = self.build_ifconfig(terminals)
+        self.build_bridges()
         result = self.build_network_card(result)
         result = self.build_tcpdump(result)
         result = self.build_mtr(result)
@@ -20,6 +22,9 @@ class Detector:
     def build_ifconfig(self, terminals):
         origin = self.extract_ifconfig(terminals)
         return origin
+
+    def build_bridges(self):
+        return
 
     def build_network_card(self, origin):
         keyMap = {}
@@ -43,8 +48,8 @@ class Detector:
         result = {}
         for key in origin.keys():
             obj = origin.get(key)
-            third_terminals = self.run_command(self.third_command_front + key +
-                                               self.third_command_last)
+            third_terminals = self.run_command(self.forth_command_front + key +
+                                               self.forth_command_last)
             neighbor = self.extract_tcpdump(third_terminals, obj.get("ether"))
             obj["neighbor"] = neighbor
             print('target = ' + neighbor['mac'] + ', current.mac = ' + obj['ether'])
@@ -59,7 +64,7 @@ class Detector:
             object = origin.get(key)
             neighbor = object['neighbor']
             if (neighbor['ip'] is not ""):
-                forth_terminals = self.run_command(self.forth_command + neighbor['ip'] + " -j")
+                forth_terminals = self.run_command(self.fifth_command + neighbor['ip'] + " -j")
                 mid = ""
                 for line in forth_terminals:
                     mid = mid + line
