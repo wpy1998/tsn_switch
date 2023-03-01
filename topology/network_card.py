@@ -30,6 +30,7 @@ class NetworkCard:
         self.ip = origin.get("inet")
         self.ipv6 = origin.get("inet6")
         self.netmask = origin.get("netmask")
+        self.bridge = origin.get("bridge")
         ethtool = origin.get("ethtool")
         mid_string = ethtool.get("Speed")
         speed = ''
@@ -72,7 +73,7 @@ class NetworkCard:
     def get_termination_point_json(self):
         termination_point = {}
         termination_point['tp-id'] = self.name
-        termination_point['bridge-name'] = ""
+        termination_point['bridge-name'] = self.bridge
         return termination_point
 
     def get_link_json(self):

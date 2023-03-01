@@ -103,6 +103,7 @@ class Detector:
                 object = {}
                 name = elements[0].replace(":", "")
                 origin[name] = object
+                object['bridge'] = self.bridge_map.get(name)
                 mid_list = elements[1].split('=')
                 object[mid_list[0]] = mid_list[1]
                 j = 2
