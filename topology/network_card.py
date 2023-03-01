@@ -23,6 +23,8 @@ class NetworkCard:
         self.worst = 0
         self.sending_speed = 0
 
+        self.bridge = ""
+
     def load_linux_object(self, origin):
         self.mac = origin.get("ether").replace(":", "-")
         self.ip = origin.get("inet")
@@ -70,6 +72,7 @@ class NetworkCard:
     def get_termination_point_json(self):
         termination_point = {}
         termination_point['tp-id'] = self.name
+        termination_point['bridge-name'] = ""
         return termination_point
 
     def get_link_json(self):

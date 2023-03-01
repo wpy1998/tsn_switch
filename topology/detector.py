@@ -3,28 +3,45 @@ import os
 
 class Detector:
     def __init__(self):
-        self.first_command = "ifconfig -a"
-        self.second_command = "ethtool "
-        self.third_command = "brctl show"
+        self.first_command = "brctl show"
+        self.second_command = "ifconfig -a"
+        self.third_command = "ethtool "
         self.forth_command_front = "tcpdump -i "
         self.forth_command_last = " -nev ether proto 0x88cc -c 2"
         self.fifth_command = "mtr -r -s 64 "
+        self.bridge_map = {}
 
     def get_local_interface(self):
         terminals = self.run_command(self.first_command)
+        self.build_bridges(terminals)
+        terminals = self.run_command(self.second_command)
         result = self.build_ifconfig(terminals)
-        self.build_bridges()
         result = self.build_network_card(result)
         result = self.build_tcpdump(result)
         result = self.build_mtr(result)
         return result
 
+    def build_bridges(self, terminals):
+        current_bridge = ""
+        for i in range(len(terminals)):
+            if (i == 0):
+                continue
+            lines = str(terminals[i]).split('\t')
+            content = []
+            for j in range(len(lines)):
+                if (len(lines[j]) == 0):
+                    continue
+                content.append(lines[j])
+            if (len(content) == 4):
+                current_bridge = content[0]
+                self.bridge_map[content[3]] = current_bridge
+            elif(len(content) == 1):
+                self.bridge_map[content[0]] = current_bridge
+        return
+
     def build_ifconfig(self, terminals):
         origin = self.extract_ifconfig(terminals)
         return origin
-
-    def build_bridges(self):
-        return
 
     def build_network_card(self, origin):
         keyMap = {}
@@ -123,7 +140,7 @@ class Detector:
         for key in origin.keys():
             if(key != "lo" and origin.get(key).get("scopeid") != None):
                 object = origin.get(key)
-                second_terminals = self.run_command(self.second_command + key)
+                second_terminals = self.run_command(self.third_command + key)
                 ethtool = self.extract_ethtool(second_terminals)
                 if(ethtool.get("Speed") == None):
                     continue
