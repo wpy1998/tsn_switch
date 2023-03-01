@@ -24,6 +24,7 @@ class NetworkCard:
         self.sending_speed = 0
 
         self.bridge = ""
+        self.mtr = False
 
     def load_linux_object(self, origin):
         self.mac = origin.get("ether").replace(":", "-")
@@ -91,4 +92,5 @@ class NetworkCard:
             speed = {}
             link['speed'] = speed
             speed['sending-speed'] = self.sending_speed
+            self.mtr = True
         return link
