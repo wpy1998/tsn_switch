@@ -22,7 +22,7 @@ class TimerThread(threading.Thread):
                 hc.refresh()
                 self.registerSwitch()
             self.time_tap = (self.time_tap + 1) % 180
-            self.block(10)
+            self.block(30)
 
     def registerSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
@@ -49,6 +49,17 @@ class TimerThread(threading.Thread):
             print('<TSN switch> register link to controller <TSN switch>')
             httpInfo.put_info(url + '/link/' + link['link-id'], json.dumps(target))
 
+        for network_card in hc.network_cards:
+            if(network_card.is_mtr):
+                continue
+            neighbor = httpInfo.get_info(url + '/node/' + network_card.mac2.replace(":", "-"))
+            node = neighbor.get("node").get(0)
+            destination_ip = node.get("host-tracker-service:addresses").get("ip")
+            report = hc.detector.run_command('mtr -r -s 64 ' + destination_ip + ' -j')
+            speed = hc.detector.extract_mtr(report)
+            httpInfo.put_info(url + '/link/' + network_card.link_id +
+                              '/tsn-network-topology-type:speed', json.dumps(speed))
+
     def removeSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
         node = hc.get_node_json()
@@ -67,6 +78,7 @@ class TimerThread(threading.Thread):
     def stop(self):
         self._flag = False
         self.removeSwitch()
+        super().stop()
 
     def block(self, seconds):
         time.sleep(seconds)

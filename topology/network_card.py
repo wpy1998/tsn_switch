@@ -24,7 +24,7 @@ class NetworkCard:
         self.sending_speed = 0
 
         self.bridge = ""
-        self.mtr = False
+        self.is_mtr = False
 
     def load_linux_object(self, origin):
         self.mac = origin.get("ether").replace(":", "-")
@@ -46,9 +46,6 @@ class NetworkCard:
         if(origin.get("neighbor") != None):
             neighbor = origin.get("neighbor")
             self.ip2 = neighbor.get("ip")
-            # self.host_name2 = neighbor.get("host-name")
-            # if(self.host_name2 == None):
-            #     self.host_name2 = ""
             self.mac2 = neighbor.get("mac")
             self.ipv6s = neighbor.get("ipv6")
             if(self.ipv6s == None):
@@ -63,6 +60,17 @@ class NetworkCard:
 
         self.link_id = self.mac + "(" + self.name + ")--" + \
                        self.mac2 + "(" + self.name2 + ")"
+
+        if(origin.get("delay") != None):
+            delay = origin.get("delay")
+            self.load_delay(delay)
+            self.is_mtr = True
+
+    def load_delay(self, delay):
+        self.worst = delay.get("worst-transmission-delay")
+        self.best = delay.get("best-transmission-delay")
+        self.avg = delay.get("avg-transmission-delay")
+        self.loss = delay.get("loss")
 
     def get_attachment_point_json(self):
         attachment_point = {}
@@ -92,5 +100,9 @@ class NetworkCard:
             speed = {}
             link['speed'] = speed
             speed['sending-speed'] = self.sending_speed
-            self.mtr = True
+            if(self.is_mtr):
+                speed['loss'] = self.loss
+                speed['best-transmission-delay'] = self.best
+                speed['worst-transmission-delay'] = self.worst
+                speed['avg-transmission-delay'] = self.avg
         return link
