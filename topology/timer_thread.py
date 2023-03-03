@@ -1,3 +1,4 @@
+import os
 import threading
 import time
 from restful_api import httpInfo
@@ -22,7 +23,7 @@ class TimerThread(threading.Thread):
                 hc.refresh()
                 self.registerSwitch()
             self.time_tap = (self.time_tap + 1) % 180
-            self.block(30)
+            self.block(10)
 
     def registerSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
@@ -49,16 +50,25 @@ class TimerThread(threading.Thread):
             print('<TSN switch> register link to controller <TSN switch>')
             httpInfo.put_info(url + '/link/' + link['link-id'], json.dumps(target))
 
-        for network_card in hc.network_cards:
+        for i in range(len(hc.network_cards)):
+            network_card = hc.network_cards.__getitem__(i)
             if(network_card.is_mtr):
                 continue
             neighbor = httpInfo.get_info(url + '/node/' + network_card.mac2.replace(":", "-"))
-            node = neighbor.get("node").get(0)
-            destination_ip = node.get("host-tracker-service:addresses").get("ip")
-            report = hc.detector.run_command('mtr -r -s 64 ' + destination_ip + ' -j')
-            speed = hc.detector.extract_mtr(report)
+            neighbor = str(neighbor, 'utf-8')
+            neighbor = json.loads(neighbor)
+            node = neighbor.get("node")[0]
+            destination_ip = node.get("host-tracker-service:addresses")[0].get("ip")
+            if(destination_ip == None):
+                continue
+            fp = os.popen('mtr -r -s 64 ' + destination_ip + ' -j')
+            result = fp.read()
+            speed = hc.detector.extract_mtr(result)
+            speed['sending-speed'] = network_card.sending_speed
+            json_object = {}
+            json_object['speed'] = speed
             httpInfo.put_info(url + '/link/' + network_card.link_id +
-                              '/tsn-network-topology-type:speed', json.dumps(speed))
+                              '/tsn-network-topology-type:speed', json.dumps(json_object))
 
     def removeSwitch(self):
         url = self.url_front + 'topology/' + self.topology_id
@@ -78,7 +88,6 @@ class TimerThread(threading.Thread):
     def stop(self):
         self._flag = False
         self.removeSwitch()
-        super().stop()
 
     def block(self, seconds):
         time.sleep(seconds)

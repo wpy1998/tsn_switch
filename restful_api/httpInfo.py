@@ -8,7 +8,9 @@ auth = HTTPBasicAuth('admin', 'admin')
 def get_info(url):
     print('request: ')
     resp = requests.get(url, headers=headers, auth=auth)
-    print('response: ', resp.content)
+    result = resp.content
+    print('response: ', result)
+    return result
 
 def put_info(url, jstr):
     print('request: ' + str(jstr))

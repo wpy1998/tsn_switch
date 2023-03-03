@@ -7,9 +7,6 @@ class NetconfThread(threading.Thread):
 
     def run(self):
         self.run_command("netopeer2-server -d -v3")
-        
-    def stop(self):
-        super().stop()
 
     def run_command(self, command):
         os.popen(command)
