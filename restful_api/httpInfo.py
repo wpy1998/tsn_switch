@@ -6,6 +6,7 @@ headers = {'Content-Type': 'application/json',
 auth = HTTPBasicAuth('admin', 'admin')
 
 def get_info(url):
+    print('get_info url=' + url)
     print('request: ')
     resp = requests.get(url, headers=headers, auth=auth)
     result = resp.content
@@ -13,16 +14,19 @@ def get_info(url):
     return result
 
 def put_info(url, jstr):
+    print('put_info url=' + url)
     print('request: ' + str(jstr))
     resp = requests.put(url, jstr, headers=headers, auth=auth)
     print('response: ', resp.content)
 
 def delete_info(url):
+    print('delete_info url=' + url)
     print('request: ')
     resp = requests.delete(url, headers=headers, auth=auth)
     print('response: ', resp.content)
 
 def post_info(url, jstr):
+    print('post_info url=' + url)
     print('request: ' + str(jstr))
     resp = requests.post(url, jstr, headers=headers, auth=auth)
     print('response: ', resp.content)

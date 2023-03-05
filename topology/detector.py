@@ -18,7 +18,7 @@ class Detector:
         result = self.build_ifconfig(terminals)
         result = self.build_network_card(result)
         result = self.build_tcpdump(result)
-        result = self.build_mtr(result)
+        # result = self.build_mtr(result)
         return result
 
     def build_bridges(self, terminals):

@@ -31,7 +31,7 @@ class TimerThread(threading.Thread):
         nodes = {}
         nodes['node'] = node
         httpInfo.put_info(url + '/node/' + node['node-id'], json.dumps(nodes))
-        print('<TSN switch> register node to controller <TSN switch>')
+        print('<TSN switch TimeThread> register node to controller.')
         # nodes = self.topology.get_json().get('node')
         # for node in nodes:
         #     array = []
@@ -41,17 +41,18 @@ class TimerThread(threading.Thread):
         #     print('<TSN switch> register node to controller <TSN switch>')
         #     httpInfo.put_info(url + '/node/' + node['node-id'], json.dumps(target))
         # links = self.topology.get_json().get('link')
-        for network_card in hc.network_cards:
+        for key in hc.network_cards.keys():
+            network_card = hc.network_cards.get(key)
             link = network_card.get_link_json()
             array = []
             target = {}
             array.append(link)
             target['link'] = array
-            print('<TSN switch> register link to controller <TSN switch>')
+            print('<TSN switch TimeThread> register link to controller.')
             httpInfo.put_info(url + '/link/' + link['link-id'], json.dumps(target))
 
-        for i in range(len(hc.network_cards)):
-            network_card = hc.network_cards.__getitem__(i)
+        for key in hc.network_cards.keys():
+            network_card = hc.network_cards.get(key)
             if(network_card.is_mtr):
                 continue
             neighbor = httpInfo.get_info(url + '/node/' + network_card.mac2.replace(":", "-"))
@@ -74,15 +75,16 @@ class TimerThread(threading.Thread):
         url = self.url_front + 'topology/' + self.topology_id
         node = hc.get_node_json()
         httpInfo.delete_info(url + '/node/' + node['node-id'])
-        print('<TSN switch> remove node from controller <TSN switch>')
+        print('<TSN switch TimeThread> remove node from controller.')
         # nodes = self.topology.get_json().get('node')
         # for node in nodes:
         #     print('<TSN switch> remove node from controller <TSN switch>')
         #     httpInfo.delete_info(url + '/node/' + node['node-id'])
         # links = self.topology.get_json().get('link')
-        for network_card in hc.network_cards:
+        for key in hc.network_cards.keys():
+            network_card = hc.network_cards.get(key)
             link = network_card.get_link_json()
-            print('<TSN switch> remove link from controller <TSN switch>')
+            print('<TSN switch TimeThread> remove link from controller.')
             httpInfo.delete_info(url + '/link/' + link['link-id'])
 
     def stop(self):

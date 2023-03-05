@@ -7,12 +7,15 @@ import topology.network_card as tn
 
 
 def refresh():
-    network_cards.clear()
     network_card_object = detector.get_local_interface()
+    for key in network_cards.keys():
+        if(network_card_object.get(key) == None):
+            network_cards.pop(key=key)
     for key in network_card_object.keys():
-        network_card = tn.NetworkCard(name=key, host_name=host_name)
-        network_card.load_linux_object(network_card_object.get(key))
-        network_cards.append(network_card)
+        if(network_cards.get(key) == None):
+            network_card = tn.NetworkCard(name=key, host_name=host_name)
+            network_card.load_linux_object(network_card_object.get(key))
+            network_cards[key] = network_card
 
 def get_node_json():
     node = {}
@@ -42,7 +45,7 @@ def get_node_json():
 
 topology_id = 'tsn-network'
 host_name = socket.gethostname()
-cuc_ip = "192.168.1.15"
+cuc_ip = "localhost"
 urls = {
     'tsn-topology': "http://" + cuc_ip +
                     ":8181/restconf/config/network-topology:network-topology/",
@@ -57,11 +60,12 @@ port = 830
 username = 'wpy'
 password = '22003x'
 
-network_cards = []
+network_cards = {}
 detector = td.Detector()
 refresh()
 ip = "0"
 mac = ""
-if(len(network_cards) != 0):
-    ip = network_cards[0].ip
-    mac = network_cards[0].mac
+for key in network_cards.keys():
+    ip = network_cards.get(key).ip
+    mac = network_cards.get(key).mac
+    break
