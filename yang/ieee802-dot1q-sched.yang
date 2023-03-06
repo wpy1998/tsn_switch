@@ -232,7 +232,7 @@ module ieee802-dot1q-sched {
           of the management system.";
         reference
           "12.29.1, 8.6.8.4 and 8.6.9.4.3 of IEEE Std 802.1Q.";
-        uses ieee802:rational-grouping;
+        uses ieee:rational-grouping;
       }
       container oper-cycle-time {
         must
@@ -249,7 +249,7 @@ module ieee802-dot1q-sched {
           defined by an integer numerator and an integer denominator.";
         reference
           "12.29.1, 8.6.8.4 and 8.6.9.4.19 of IEEE Std 802.1Q.";
-        uses ieee802:rational-grouping;
+        uses ieee:rational-grouping;
       }
       leaf admin-cycle-time-extension {
         type uint32;
@@ -283,7 +283,7 @@ module ieee802-dot1q-sched {
           the management system.";
         reference
           "12.29.1 and 8.6.9.4.1 of IEEE Std 802.1Q.";
-        uses ieee802:ptp-time-grouping;
+        uses ieee:ptp-time-grouping;
       }
       container oper-base-time {
         config false;
@@ -293,7 +293,7 @@ module ieee802-dot1q-sched {
           timescale.";
         reference
           "12.29.1 and 8.6.9.4.17 of IEEE Std 802.1Q.";
-        uses ieee802:ptp-time-grouping;
+        uses ieee:ptp-time-grouping;
       }
       leaf config-change {
         type boolean;
@@ -313,7 +313,7 @@ module ieee802-dot1q-sched {
           "The time at which the next config change is scheduled to occur.";
         reference
           "12.29.1 and 8.6.9.4.9 of IEEE Std 802.1Q.";
-        uses ieee802:ptp-time-grouping;
+        uses ieee:ptp-time-grouping;
       }
       leaf tick-granularity {
         type uint32;
@@ -331,7 +331,7 @@ module ieee802-dot1q-sched {
           "The current time as maintained by the local system.";
         reference
           "12.29.1 and 8.6.9.4.10 of IEEE Std 802.1Q.";
-        uses ieee802:ptp-time-grouping;
+        uses ieee:ptp-time-grouping;
       }
       leaf config-pending {
         type boolean;
@@ -371,7 +371,7 @@ module ieee802-dot1q-sched {
           read-only.";
         reference
           "12.29.1.6 of IEEE Std 802.1Qcw";
-        uses ieee802:rational-grouping;
+        uses ieee:rational-grouping;
       }
       leaf supported-interval-max {
         type uint32;
