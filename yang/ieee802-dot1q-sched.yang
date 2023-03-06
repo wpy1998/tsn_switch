@@ -6,7 +6,7 @@ module ieee802-dot1q-sched {
     prefix yang;
   }
   import ieee802-types {
-    prefix ieee802;
+    prefix ieee;
   }
   import ieee802-dot1q-types {
     prefix dot1q-types;
