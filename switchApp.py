@@ -11,11 +11,11 @@ if __name__ == "__main__":
     print('*****************************************************************')
     topology_launcher = tl.TopologyLauncher()
     topology_launcher.startTimerThread()
-    netconf_launcher = nl.NetconfLauncher()
-    netconf_launcher.startNetconfThread()
+    # netconf_launcher = nl.NetconfLauncher()
+    # netconf_launcher.startNetconfThread()
     while True:
         next = input()
         if next == 'exit' or next == 'quit' or next == 'stop':
             topology_launcher.stopTimerThread()
-            netconf_launcher.stopNetconfThread()
+            # netconf_launcher.stopNetconfThread()
             break

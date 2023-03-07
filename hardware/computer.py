@@ -38,7 +38,8 @@ def get_node_json():
     attachment_points = []
     node['attachment-points'] = attachment_points
 
-    for network_card in network_cards:
+    for key in network_cards.keys():
+        network_card = network_cards.get(key)
         termination_points.append(network_card.get_termination_point_json())
         attachment_points.append(network_card.get_attachment_point_json())
     return node
