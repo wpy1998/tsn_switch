@@ -58,6 +58,8 @@ class TimerThread(threading.Thread):
             neighbor = httpInfo.get_info(url + '/node/' + network_card.mac2.replace(":", "-"))
             neighbor = str(neighbor, 'utf-8')
             neighbor = json.loads(neighbor)
+            if(neighbor.get("node") == None):
+                continue
             node = neighbor.get("node")[0]
             destination_ip = node.get("host-tracker-service:addresses")[0].get("ip")
             if(destination_ip == None):
